@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "174517130360",
+    "project_id": "routeit-c39d0",
+    "storage_bucket": "routeit-c39d0.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:174517130360:android:7603245f7612d5b6f7c98d",
+        "android_client_info": {
+          "package_name": "com.example.route_it_v2"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "174517130360-k2t8nhinqh3spptk7cb2e03e9kqpb101.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDM6oD0OTyqFg3HAup6Xn8Rx1RmFjzq3b0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "174517130360-k2t8nhinqh3spptk7cb2e03e9kqpb101.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
