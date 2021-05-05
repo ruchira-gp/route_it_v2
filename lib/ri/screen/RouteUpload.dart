@@ -851,20 +851,7 @@ class _RouteUploadState extends State<RouteUpload> {
                   ],
                 ),
               ),
-              TextButton(
-                onPressed: (){
-                  Navigator.pushAndRemoveUntil(
-                    context,
-                    MaterialPageRoute(
-                      builder: (BuildContext context) => QIBusSignIn(),
-                    ),
-                        (route) => false,
-                  );
-                },
-                child: Text(
-                  "Already have an Account? Login Here",
-                ),
-              )
+
             ],
           ),
         ),
