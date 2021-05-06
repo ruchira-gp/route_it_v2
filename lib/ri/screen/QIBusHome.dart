@@ -24,6 +24,7 @@ import 'package:document_analysis/document_analysis.dart';
 import 'QIBusSearhList.dart';
 import 'QIBusSignIn.dart';
 import 'QIBusViewOffer.dart';
+import 'dart:collection';
 
 class QIBusHome extends StatefulWidget {
   @override
@@ -162,6 +163,10 @@ class QIBusHomeState extends State<QIBusHome> {
       finalList[docId[x]]=cosineValues[x];
     }
     print(finalList);
+    var sortedKeys = finalList.keys.toList(growable:false)..sort((k1, k2) => finalList[k2].compareTo(finalList[k1]));
+    LinkedHashMap sortedMap = new LinkedHashMap
+        .fromIterable(sortedKeys, key: (k) => k, value: (k) => finalList[k]);
+    print(sortedMap);
     // List temp=[];
     // List temp2=[];
     // temp=finalList.values.toList()..sort();
