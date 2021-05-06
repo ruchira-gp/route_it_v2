@@ -33,9 +33,9 @@ class QIBusHome extends StatefulWidget {
 }
 
 class QIBusHomeState extends State<QIBusHome> {
-  List A=[];//Doc Ids
+  List docId=[];//Doc Ids
   List B=[];//nested list of routes prefs
-  List C=[];//user prefs
+  List userPreference=[];//user prefs
 
 
   retrieveDocId()async{
@@ -49,11 +49,11 @@ class QIBusHomeState extends State<QIBusHome> {
         .then((QuerySnapshot querySnapshot) => {
       querySnapshot.docs.forEach((doc) {
         //print(doc.id);
-        A.add(doc.id);
+        docId.add(doc.id);
       })
     });
-    print(A);
-    A.clear();
+    print(docId);
+    docId.clear();
     // return a;
   }
 
@@ -99,30 +99,79 @@ class QIBusHomeState extends State<QIBusHome> {
       d=result.data()['prefs']['mountain'];
       e=result.data()['prefs']['pilgrimage'];
       f=result.data()['prefs']['riverside'];
-      C.add(a);
-      C.add(b);
-      C.add(c);C.add(d);C.add(e);C.add(f);
+      userPreference.add(a);
+      userPreference.add(b);
+      userPreference.add(c);
+      userPreference.add(d);
+      userPreference.add(e);
+      userPreference.add(f);
     });
     //print(a);
 
 
-    print(C);
+    print(userPreference);
 
     //print("Jaccard: ${jaccardDistance(B[0], )}");//0.333...
     // print("Cosine: ${cosineDistance(vector1, vector2)}");//0.1
   }
   cosineDist(){
+
     var listInt1 = B[0];
-    var listInt2=C;
+    var listInt2=userPreference;
     var listDouble = listInt1.map((i) => int.parse(i.toString()).toDouble()).toList();
-    var listDouble2 = C.map((i) => int.parse(i.toString()).toDouble()).toList();
     listDouble=listDouble.cast<double>();
-    print(listDouble);
-    print(listDouble2);
+    var userPreferenceDouble = userPreference.map((i) => int.parse(i.toString()).toDouble()).toList();
+    print("listDouble=$listDouble");
+    print("userPreferenceDouble=$userPreferenceDouble");
+    // List<double> cosineValue;
+    // for(var i=1;i<listDouble.length;i++){
+    //   print(listDouble[i]);
+    // }
+    // List<double> cosineValues=[];
+    // double x=1-cosineDistance(listDouble,userPreferenceDouble);
+    // print(x);
+    // print(x.runtimeType);
+    // cosineValues.add(x);
+    // print(cosineValues);
 
+    //cosineValues.add(1-cosineDistance(listDouble,userPreferenceDouble));
+    //print(cosineValues);
+    //print("Cosine: ${1-cosineDistance(listDouble,userPreferenceDouble)}");//0.1
 
-    print("Cosine: ${1-cosineDistance(listDouble,listDouble2)}");//0.1
+    List routeRating=B;
+    List<double> cosineValues=[];
+
+    for(var i=0;i<routeRating.length;i++){
+      print(routeRating[i]);
+      var temp=routeRating[i];
+      print(routeRating[i].runtimeType);
+      var tempDouble = temp.map((i) => int.parse(i.toString()).toDouble()).toList();
+      tempDouble=tempDouble.cast<double>();
+      print(tempDouble);
+      //print("Cosine: ${1-cosineDistance(tempDouble,userPreferenceDouble)}");
+      double x=1-cosineDistance(tempDouble,userPreferenceDouble);
+      print(x);
+      print(x.runtimeType);
+      cosineValues.add(x);
+      print("---");
+    }
+    print(cosineValues);
+    var finalList = new Map();
+
+    for (var x=0; x<cosineValues.length;x++){
+      finalList[docId[x]]=cosineValues[x];
+    }
+    print(finalList);
+    // List temp=[];
+    // List temp2=[];
+    // temp=finalList.values.toList()..sort();
+    // for(int i=0;i<temp.length;i++){
+    //   temp2.add(finalList.containsValue(temp[i]));
+    // }
+    // print(temp);
+    // print(temp2);
   }
+
   var isSelected = 0;
   List<QIBusBookingModel> mRecentList;
   List<QIBusNewOfferModel> mOfferList;
@@ -277,9 +326,9 @@ test()async{
         GestureDetector(
           onTap: () {
             // getToList();
-            print("A=$A");
+            print("Doc Id=$docId");
             print("B=$B");
-            print("C=$C");
+            print("User Preference=$userPreference");
             cosineDist();
 
             // launchScreen(context, QIBusNotification.tag);
