@@ -54,15 +54,17 @@ Padding editTextStyle(var hintText, {var line = 1}) {
       ));
 }
 
-Container homeEditTextStyle(var hintText, {var line = 1}) {
+Container homeEditTextStyle(var hintText,TextEditingController controllerSearch, {var line = 1}) {
   return Container(
     child: TextField(
+      controller:controllerSearch,
       style: TextStyle(fontSize: textSizeMedium, fontFamily: fontRegular, color: qIBus_textChild),
       decoration: InputDecoration(
         contentPadding: EdgeInsets.fromLTRB(16, 8, 16, 8),
         isDense: true,
         hintText: hintText,
         border: InputBorder.none,
+
       ),
     ),
   );

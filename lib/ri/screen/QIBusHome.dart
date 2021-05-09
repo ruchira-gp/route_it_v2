@@ -34,72 +34,80 @@ class QIBusHome extends StatefulWidget {
 }
 
 class QIBusHomeState extends State<QIBusHome> {
-  List docId=[];//Doc Ids
-  List B=[];//nested list of routes prefs
-  List userPreference=[];//user prefs
+  List docId = []; //Doc Ids
+  List B = []; //nested list of routes prefs
+  List userPreference = [];
 
+  static var toSearchController = TextEditingController();
+  static var fromSearchController = TextEditingController();
+  // static TextEditingController get toSearchController => null; //user prefs
+  //static TextEditingController get fromSearchController => null;
 
-  retrieveDocId()async{
+  retrieveDocId() async {
     //A.clear();
-    var firebaseUser =  FirebaseAuth.instance.currentUser;
+    var firebaseUser = FirebaseAuth.instance.currentUser;
     final firestoreInstance = FirebaseFirestore.instance;
 
     FirebaseFirestore.instance
         .collection('trip')
         .get()
         .then((QuerySnapshot querySnapshot) => {
-      querySnapshot.docs.forEach((doc) {
-        //print(doc.id);
-        docId.add(doc.id);
-      })
-    });
+              querySnapshot.docs.forEach((doc) {
+                //print(doc.id);
+                docId.add(doc.id);
+              })
+            });
     print(docId);
     docId.clear();
     // return a;
   }
 
-  retrieveRoutePreferences()async{
+  retrieveRoutePreferences() async {
     var firebaseUser = FirebaseAuth.instance.currentUser;
     final firestoreInstance = FirebaseFirestore.instance;
     firestoreInstance.collection('trip').get().then((querySnapshot) {
       querySnapshot.docs.forEach((result) {
-        List X=[];
+        List X = [];
         X.clear();
-        String a="",b="",c="",d="",e="",f="";
+        String a = "", b = "", c = "", d = "", e = "", f = "";
         //print(result.id);
-        a=result.data()['route']['prefs']['desert'];
-        b=result.data()['route']['prefs']['forest'];
-        c=result.data()['route']['prefs']['highway'];
-        d=result.data()['route']['prefs']['mountain'];
-        e=result.data()['route']['prefs']['pilgrimage'];
-        f=result.data()['route']['prefs']['riverside'];
+        a = result.data()['route']['prefs']['desert'];
+        b = result.data()['route']['prefs']['forest'];
+        c = result.data()['route']['prefs']['highway'];
+        d = result.data()['route']['prefs']['mountain'];
+        e = result.data()['route']['prefs']['pilgrimage'];
+        f = result.data()['route']['prefs']['riverside'];
         X.add(a);
         X.add(b);
-        X.add(c);X.add(d);X.add(e);X.add(f);
+        X.add(c);
+        X.add(d);
+        X.add(e);
+        X.add(f);
         B.add(X);
-
-
       });
     });
     print(B);
 
-
     B.clear();
-
   }
-  retrieveUserRoutePreference(){
-    var firebaseUser =  FirebaseAuth.instance.currentUser;
+
+  retrieveUserRoutePreference() {
+    var firebaseUser = FirebaseAuth.instance.currentUser;
     final firestoreInstance = FirebaseFirestore.instance;
 
-    firestoreInstance.collection("users").doc(firebaseUser.uid).get().then((result){
-      int a=0,b=0,c=0,d=0,e=0,f=0;
+    firestoreInstance
+        .collection("users")
+        .doc(firebaseUser.uid)
+        .get()
+        .then((result) {
+      int a = 0, b = 0, c = 0, d = 0, e = 0, f = 0;
       //print(result.id);
-      a=result.data()['prefs']['desert'];
-      b=result.data()['prefs']['forest'];
-      c=result.data()['prefs']['highway'];
-      d=result.data()['prefs']['mountain'];
-      e=result.data()['prefs']['pilgrimage'];
-      f=result.data()['prefs']['riverside'];
+      a = result.data()['prefs']['desert'];
+      b = result.data()['prefs']['forest'];
+      c = result.data()['prefs']['highway'];
+      d = result.data()['prefs']['mountain'];
+      e = result.data()['prefs']['pilgrimage'];
+      f = result.data()['prefs']['riverside'];
       userPreference.add(a);
       userPreference.add(b);
       userPreference.add(c);
@@ -109,19 +117,20 @@ class QIBusHomeState extends State<QIBusHome> {
     });
     //print(a);
 
-
     print(userPreference);
 
     //print("Jaccard: ${jaccardDistance(B[0], )}");//0.333...
     // print("Cosine: ${cosineDistance(vector1, vector2)}");//0.1
   }
-  cosineDist(){
 
+  cosineDist() {
     var listInt1 = B[0];
-    var listInt2=userPreference;
-    var listDouble = listInt1.map((i) => int.parse(i.toString()).toDouble()).toList();
-    listDouble=listDouble.cast<double>();
-    var userPreferenceDouble = userPreference.map((i) => int.parse(i.toString()).toDouble()).toList();
+    var listInt2 = userPreference;
+    var listDouble =
+        listInt1.map((i) => int.parse(i.toString()).toDouble()).toList();
+    listDouble = listDouble.cast<double>();
+    var userPreferenceDouble =
+        userPreference.map((i) => int.parse(i.toString()).toDouble()).toList();
     print("listDouble=$listDouble");
     print("userPreferenceDouble=$userPreferenceDouble");
     // List<double> cosineValue;
@@ -139,18 +148,19 @@ class QIBusHomeState extends State<QIBusHome> {
     //print(cosineValues);
     //print("Cosine: ${1-cosineDistance(listDouble,userPreferenceDouble)}");//0.1
 
-    List routeRating=B;
-    List<double> cosineValues=[];
+    List routeRating = B;
+    List<double> cosineValues = [];
 
-    for(var i=0;i<routeRating.length;i++){
+    for (var i = 0; i < routeRating.length; i++) {
       print(routeRating[i]);
-      var temp=routeRating[i];
+      var temp = routeRating[i];
       print(routeRating[i].runtimeType);
-      var tempDouble = temp.map((i) => int.parse(i.toString()).toDouble()).toList();
-      tempDouble=tempDouble.cast<double>();
+      var tempDouble =
+          temp.map((i) => int.parse(i.toString()).toDouble()).toList();
+      tempDouble = tempDouble.cast<double>();
       print(tempDouble);
       //print("Cosine: ${1-cosineDistance(tempDouble,userPreferenceDouble)}");
-      double x=1-cosineDistance(tempDouble,userPreferenceDouble);
+      double x = 1 - cosineDistance(tempDouble, userPreferenceDouble);
       print(x);
       print(x.runtimeType);
       cosineValues.add(x);
@@ -159,22 +169,16 @@ class QIBusHomeState extends State<QIBusHome> {
     print(cosineValues);
     var finalList = new Map();
 
-    for (var x=0; x<cosineValues.length;x++){
-      finalList[docId[x]]=cosineValues[x];
+    for (var x = 0; x < cosineValues.length; x++) {
+      finalList[docId[x]] = cosineValues[x];
     }
     print(finalList);
-    var sortedKeys = finalList.keys.toList(growable:false)..sort((k1, k2) => finalList[k2].compareTo(finalList[k1]));
-    LinkedHashMap sortedMap = new LinkedHashMap
-        .fromIterable(sortedKeys, key: (k) => k, value: (k) => finalList[k]);
+    var sortedKeys = finalList.keys.toList(growable: false)
+      ..sort((k1, k2) => finalList[k2].compareTo(finalList[k1]));
+    LinkedHashMap sortedMap = new LinkedHashMap.fromIterable(sortedKeys,
+        key: (k) => k, value: (k) => finalList[k]);
     print(sortedMap);
-    // List temp=[];
-    // List temp2=[];
-    // temp=finalList.values.toList()..sort();
-    // for(int i=0;i<temp.length;i++){
-    //   temp2.add(finalList.containsValue(temp[i]));
-    // }
-    // print(temp);
-    // print(temp2);
+
   }
 
   var isSelected = 0;
@@ -184,27 +188,28 @@ class QIBusHomeState extends State<QIBusHome> {
   var count = 1;
   var formatter = new DateFormat('dd - MMM - yyyy');
   String formatted;
-  String x="";
+  String x = "";
   var toList = [];
   var fromList = [];
-  getToList()async {
+  var toFromList = [];
+  getToList() async {
     var firebaseUser = FirebaseAuth.instance.currentUser;
     final firestoreInstance = FirebaseFirestore.instance;
     // await firestoreInstance.collection("trip").doc().get().then((value){
     //   print(value.id);
-   firestoreInstance.collection("trip").get().then((querySnapshot) {
-     print(querySnapshot);
+    firestoreInstance.collection("trip").get().then((querySnapshot) {
+      print(querySnapshot);
       querySnapshot.docs.forEach((result) {
         //print(result.data()['route']['prefs']);
         //print(result.id);
         print(result.data()['route']['route_info']['to']);
         toList.add(result.data()['route']['route_info']['to']);
       });
-   });
+    });
   }
 
-  getFromList()async {
-    var firebaseUser = FirebaseAuth.instance.currentUser;
+  getFromList() async {
+   // var firebaseUser = FirebaseAuth.instance.currentUser;
     final firestoreInstance = FirebaseFirestore.instance;
     firestoreInstance.collection("trip").get().then((querySnapshot) {
       querySnapshot.docs.forEach((result) {
@@ -214,24 +219,48 @@ class QIBusHomeState extends State<QIBusHome> {
       });
     });
   }
-     // });
-    //});
 
-    //print(a);
+  getToFromList() async {
+   // var firebaseUser = FirebaseAuth.instance.currentUser;
+    final firestoreInstance = FirebaseFirestore.instance;
+    // await firestoreInstance.collection("trip").doc().get().then((value){
+    //   print(value.id);
+    firestoreInstance.collection("trip").get().then((querySnapshot) {
+      //print(querySnapshot);
+      querySnapshot.docs.forEach((result) {
+        //print(result.data()['route']['prefs']);
+        //print(result.id);
+       // print(result.data()['route']['route_info']['to']);
+        if (result.data()['route']['route_info']['from'] ==
+            fromSearchController.text) {
+          print('this is id ');
+          print(result.id);
+          print(result.data()['route']['route_info']['to']);
+          toFromList.add(result.data()['route']['route_info']['to']);
+        }
+      });
+    });
+    print("###############################################");
+   // print(toFromList);
+  }
 
-test()async{
-  await retrieveDocId();
-  await retrieveRoutePreferences();
-  await retrieveUserRoutePreference();
-   cosineDist();
-}
+
+
+
+  test() async {
+    await retrieveDocId();
+    await retrieveRoutePreferences();
+    await retrieveUserRoutePreference();
+    cosineDist();
+  }
 
   @override
   void initState() {
     super.initState();
     getToList();
     getFromList();
-     test();
+    test();
+
     mRecentList = QIBusGetData();
     mOfferList = QIBusGetOffer();
     formatted = formatter.format(now);
@@ -247,16 +276,15 @@ test()async{
             fontSize: textSizeLargeMedium),
         GestureDetector(
           onTap: () {
-            Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => FirstPreference()));
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (BuildContext context) => FirstPreference()));
             retrievePreference().then((s) {
               print(s);
-            }
-            );
+            });
 
-
-
-
-           // launchScreen(context, QIBusNotification.tag);
+            // launchScreen(context, QIBusNotification.tag);
           },
           child: Image(
             image: AssetImage(qibus_gif_bell),
@@ -265,17 +293,16 @@ test()async{
             color: qIBus_white,
           ),
         ),
-
         GestureDetector(
-          onTap: () async{
-           // getToList();
+          onTap: () async {
+            // getToList();
             await FirebaseAuth.instance.signOut();
             Navigator.pushAndRemoveUntil(
               context,
               MaterialPageRoute(
                 builder: (BuildContext context) => QIBusSignIn(),
               ),
-                  (route) => false,
+              (route) => false,
             );
             // launchScreen(context, QIBusNotification.tag);
           },
@@ -287,8 +314,8 @@ test()async{
           ),
         ),
         GestureDetector(
-          onTap: () async{
-             getToList();
+          onTap: () async {
+            getToList();
             // await FirebaseAuth.instance.signOut();
             // Navigator.pushAndRemoveUntil(
             //   context,
@@ -307,10 +334,11 @@ test()async{
           ),
         ),
         GestureDetector(
-          onTap: () async{
-    Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => Temp()));
+          onTap: () async {
+            Navigator.push(context,
+                MaterialPageRoute(builder: (BuildContext context) => CheckedIn()));
 
-           // getToList();
+            // getToList();
             // await FirebaseAuth.instance.signOut();
             // Navigator.pushAndRemoveUntil(
             //   context,
@@ -330,13 +358,23 @@ test()async{
         ),
         GestureDetector(
           onTap: () {
-            // getToList();
-            print("Doc Id=$docId");
-            print("B=$B");
-            print("User Preference=$userPreference");
-            cosineDist();
+           // getToList();
+           //  print("Doc Id=$docId");
+           //  print("B=$B");
+           //  print("User Preference=$userPreference");
+           //  cosineDist();
+            getToFromList();
+            //toFromList.clear();
 
             // launchScreen(context, QIBusNotification.tag);
+          },
+          onDoubleTap: (){
+            print('printing list');
+            print(toFromList);
+          },
+          onLongPress: (){
+            print(' Clearing toFromList..................');
+            toFromList.clear();
           },
           child: Image(
             image: AssetImage(qibus_gif_bell),
@@ -379,9 +417,37 @@ test()async{
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
-            homeEditTextStyle(QIBus_hint_from_city),
+            Container(
+              child: TextField(
+                controller: fromSearchController,
+                style: TextStyle(
+                    fontSize: textSizeMedium,
+                    fontFamily: fontRegular,
+                    color: qIBus_textChild),
+                decoration: InputDecoration(
+                  contentPadding: EdgeInsets.fromLTRB(16, 8, 16, 8),
+                  isDense: true,
+                  hintText: 'From city',
+                  border: InputBorder.none,
+                ),
+              ),
+            ),
             view(),
-            homeEditTextStyle(QIBus_hint_to_city),
+            Container(
+              child: TextField(
+                controller: toSearchController,
+                style: TextStyle(
+                    fontSize: textSizeMedium,
+                    fontFamily: fontRegular,
+                    color: qIBus_textChild),
+                decoration: InputDecoration(
+                  contentPadding: EdgeInsets.fromLTRB(16, 8, 16, 8),
+                  isDense: true,
+                  hintText: 'To city',
+                  border: InputBorder.none,
+                ),
+              ),
+            ),
           ],
         ),
       ),
@@ -403,7 +469,7 @@ test()async{
     ],
   );
 
-  Widget mOption(IconData    icon, var name, var pos) {
+  Widget mOption(IconData icon, var name, var pos) {
     return GestureDetector(
       onTap: () {
         setState(() {
@@ -415,9 +481,10 @@ test()async{
           SizedBox(
             height: spacing_standard,
           ),
-          Icon(icon,
-              color: isSelected == pos ? qIBus_colorPrimary : qIBus_icon_color,
-              ),
+          Icon(
+            icon,
+            color: isSelected == pos ? qIBus_colorPrimary : qIBus_icon_color,
+          ),
           SizedBox(
             height: 4,
           ),
@@ -598,13 +665,17 @@ test()async{
       floatingActionButton: FloatingActionButton(
         backgroundColor: Colors.red,
         splashColor: Colors.green,
-        child:Icon(Icons.upload_sharp),
-        onPressed: (){
-          Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => RouteUpload()));
+        child: Icon(Icons.upload_sharp),
+        onPressed: () {
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (BuildContext context) => RouteUpload()));
           print("hello");
         },
       ),
       backgroundColor: qIBus_app_background,
+
       body: SafeArea(
           child: SingleChildScrollView(
         child: Stack(
@@ -661,14 +732,15 @@ test()async{
                   SizedBox(
                     height: 16,
                   ),
-                 // mSelection(formatted),
-                 // mRecentSearchLbl,
-                 // mRecentSearch(context),
-                 // mNewOfferLbl(),
-                 // mOffer(context),
+                  // mSelection(formatted),
+                  // mRecentSearchLbl,
+                  // mRecentSearch(context),
+                  // mNewOfferLbl(),
+                  // mOffer(context),
                   SizedBox(
                     height: 16,
                   ),
+
                 ],
               ),
             )
