@@ -358,11 +358,11 @@ class QIBusHomeState extends State<QIBusHome> {
         ),
         GestureDetector(
           onTap: () {
-           // getToList();
-           //  print("Doc Id=$docId");
-           //  print("B=$B");
-           //  print("User Preference=$userPreference");
-           //  cosineDist();
+           getToList();
+            print("Doc Id=$docId");
+            print("B=$B");
+            print("User Preference=$userPreference");
+            cosineDist();
             getToFromList();
             //toFromList.clear();
 
