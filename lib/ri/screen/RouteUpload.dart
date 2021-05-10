@@ -5,6 +5,7 @@ import 'package:intl/intl.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:route_it_v2/ri/screen/HomePage.dart';
 import 'package:route_it_v2/ri/screen/QIBusHome.dart';
 import 'package:route_it_v2/ri/screen/QIBusSignIn.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -138,7 +139,7 @@ class _RouteUploadState extends State<RouteUpload> {
 
              linkTextEditingController.clear();
             Navigator.pushAndRemoveUntil(  context,
-              MaterialPageRoute(builder: (BuildContext context) => QIBusHome()),
+              MaterialPageRoute(builder: (BuildContext context) => NavigatorPage()),
               ModalRoute.withName('/'),);
         print("success!");
       });

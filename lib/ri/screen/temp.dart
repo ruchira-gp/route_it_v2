@@ -28,22 +28,22 @@ class _CheckedInState extends State<CheckedIn> {
   );
   final key = GlobalKey<ScaffoldState>();
   final TextEditingController _searchQuery = TextEditingController();
-  List userData = [];
-  List<String> userNameData = [];
+  //List userData = [];
+  //List<String> userNameData = [];
   // ignore
-  bool _IsSearching;
+  bool _isSearching=false;
   String _searchText = "";
 
   _CheckedInState() {
     _searchQuery.addListener(() {
-      if (_searchQuery.text.isEmpty) {
+      if (_searchQuery.text.isEmpty==true) {
         setState(() {
-          _IsSearching = true;
+          _isSearching = false;
           _searchText = "";
         });
       } else {
         setState(() {
-          _IsSearching = true;
+          _isSearching = true;
           _searchText = _searchQuery.text;
         });
       }
@@ -51,97 +51,12 @@ class _CheckedInState extends State<CheckedIn> {
   }
 
 
-  // doThis(){
-  //
-  //   VDD.add(VisitorDetails(
-  //     name: 'ramzan',
-  //     otp: '123',
-  //     totalVisitor: '2',
-  //     guest_status: '2',
-  //     phNo: '1234567890',
-  //     visitTime: '10-2-12',
-  //     checkOutTime: '10-2-12',
-  //     checkinTime: '10-2-12',
-  //     employeeName: 'apple',
-  //     purpose: 'assc',
-  //     visitDate: '14-10-2020',
-  //     visitorImage: 'https://visitor.prusight.com/uploads/guestImages/5f86a4f98623b.jpg',
-  //   ));
-  //   VDD.add(VisitorDetails(
-  //     name: 'ritviz',
-  //     otp: '123',
-  //     totalVisitor: '2',
-  //     guest_status: '2',
-  //     phNo: '1234567890',
-  //     visitTime: '10-2-12',
-  //     checkOutTime: '10-2-12',
-  //     checkinTime: '10-2-12',
-  //     employeeName: 'apple',
-  //     purpose: 'assc',
-  //     visitDate: '14-10-2020',
-  //     visitorImage: 'https://visitor.prusight.com/uploads/guestImages/5f86a4f98623b.jpg',
-  //   ));
-  //   VDD.add(VisitorDetails(
-  //     name: 'rakesh',
-  //     otp: '123',
-  //     totalVisitor: '2',
-  //     guest_status: '2',
-  //     phNo: '1234567890',
-  //     visitTime: '10-2-12',
-  //     checkOutTime: '10-2-12',
-  //     checkinTime: '10-2-12',
-  //     employeeName: 'apple',
-  //     purpose: 'assc',
-  //     visitDate: '14-10-2020',
-  //     visitorImage: 'https://visitor.prusight.com/uploads/guestImages/5f86a4f98623b.jpg',
-  //   ));
-  //   VDD.add(VisitorDetails(
-  //     name: 'ramu',
-  //     otp: '123',
-  //     totalVisitor: '2',
-  //     guest_status: '2',
-  //     phNo: '1234567890',
-  //     visitTime: '10-2-12',
-  //     checkOutTime: '10-2-12',
-  //     checkinTime: '10-2-12',
-  //     employeeName: 'apple',
-  //     purpose: 'assc',
-  //     visitDate: '14-10-2020',
-  //     visitorImage: 'https://visitor.prusight.com/uploads/guestImages/5f86a4f98623b.jpg',
-  //   ));
-  //   VDD.add(VisitorDetails(
-  //     name: 'ram',
-  //     otp: '123',
-  //     totalVisitor: '2',
-  //     guest_status: '2',
-  //     phNo: '1234567890',
-  //     visitTime: '10-2-12',
-  //     checkOutTime: '10-2-12',
-  //     checkinTime: '10-2-12',
-  //     employeeName: 'apple',
-  //     purpose: 'assc',
-  //     visitDate: '14-10-2020',
-  //     visitorImage: 'https://visitor.prusight.com/uploads/guestImages/5f86a4f98623b.jpg',
-  //   ));
-  //   VDD.add(VisitorDetails(
-  //     name: 'abcd',
-  //     otp: '123',
-  //     totalVisitor: '2',
-  //     guest_status: '2',
-  //     phNo: '1234567890',
-  //     visitTime: '10-2-12',
-  //     checkOutTime: '10-2-12',
-  //     checkinTime: '10-2-12',
-  //     employeeName: 'apple',
-  //     purpose: 'assc',
-  //     visitDate: '14-10-2020',
-  //     visitorImage: 'https://visitor.prusight.com/uploads/guestImages/5f86a4f98623b.jpg',
-  //   ));
-  // }
-  _buildList() {
-   // List<TripDetails> VD = TD;
 
-    return TD;
+  _buildList() {
+    List<TripDetails> VD = [];
+   // VD=TD;
+   // print(VD.length);
+    return VD;
   }
 
   _buildSearchList() {
@@ -211,7 +126,7 @@ class _CheckedInState extends State<CheckedIn> {
     @override
     void initState() {
       super.initState();
-      _IsSearching = false;
+      _isSearching = false;
 
       doThis();
 
@@ -227,7 +142,7 @@ class _CheckedInState extends State<CheckedIn> {
           gridDelegate:
           SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2),
           padding: EdgeInsets.symmetric(vertical: 8.0),
-          children: _IsSearching ? _buildSearchList():_buildList()  ,
+          children: _isSearching ? _buildSearchList():_buildList()  ,
         ),
 
         //_IsSearching ? _buildSearchList() : _buildList(),
@@ -271,7 +186,7 @@ class _CheckedInState extends State<CheckedIn> {
 
     void _handleSearchStart() {
       setState(() {
-        _IsSearching = true;
+        _isSearching = true;
       });
     }
 
@@ -285,23 +200,13 @@ class _CheckedInState extends State<CheckedIn> {
           "Trips",
           style: TextStyle(color: Colors.white),
         );
-        _IsSearching = false;
+        _isSearching = false;
         _searchQuery.clear();
       });
     }
   }
 
 
-class ChildItem extends StatelessWidget {
-  final String name;
-
-  ChildItem(this.name);
-
-  @override
-  Widget build(BuildContext context) {
-    return ListTile(title: Text(this.name));
-  }
-}
 class TripDetails extends StatelessWidget {
   final String desc;
   final String title;
@@ -425,5 +330,210 @@ class TripDetails extends StatelessWidget {
   }
 }
 
-
+// class VisitorDetails extends StatelessWidget {
+//   final String name;
+//   final String phNo;
+//   final String checkOutTime;
+//   final String totalVisitor;
+//   final String visitTime;
+//   final String otp;
+//   final  String guest_status;
+//   final String visitDate;
+//   final String checkinTime;
+//   final String purpose;
+//   final String employeeName;
+//   final String visitorImage;
+//   VisitorDetails(
+//       {this.checkOutTime,
+//         this.otp,
+//         this.guest_status,
+//         this.visitTime,
+//         this.totalVisitor,
+//         this.phNo,
+//         this.name,
+//         this.purpose,
+//         this.employeeName,
+//         this.visitDate,
+//         this.checkinTime,
+//         this.visitorImage,
+//       });
+//   @override
+//   Widget build(BuildContext context) {
+//     return GestureDetector(
+//       onTap: () {
+//         showDialog(
+//             context: context,
+//             builder: (BuildContext context) {
+//               return AlertDialog(
+//                 title: Center(child: Text('Visitor Details')),
+//                 content: Container(
+//                   child: Column(
+//                     children: [
+//                       Stack(
+//                         children: [
+//                           CircleAvatar(
+//                             backgroundImage: AssetImage('images/ri/qibus_ic_home_selected.png'),
+//                             backgroundColor: Colors.transparent,
+//                             radius: 45,
+//                           ),
+//                           CircleAvatar(
+//                             backgroundImage:NetworkImage(visitorImage),
+//                             backgroundColor: Colors.transparent,
+//                             radius: 45,
+//                             //backgroundImage: ImageProvider(AssetImage('images/DANKJI.png')),
+//                           ),
+//                         ],
+//                       ),
+//                       Text('Name',style: TextStyle(color: Colors.green,),textAlign: TextAlign.left,),
+//                       Text(name,style: TextStyle(fontSize: 30,fontWeight: FontWeight.w900,fontStyle:FontStyle.normal),),
+//                       SizedBox(height: 15,),
+//                       Row(
+//                         children: [
+//                           Column(crossAxisAlignment: CrossAxisAlignment.start,
+//                             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+//                             children: [
+//                               Text('Visit Date ', style: TextStyle(color: Colors.grey,),textAlign: TextAlign.left,),
+//                               Text(visitDate,style: TextStyle(fontWeight: FontWeight.bold,fontSize: 20),),
+//                               SizedBox(height: 15,),
+//                               Text('Phone Number ',style: TextStyle(color: Colors.grey,),textAlign: TextAlign.left,),
+//                               Text(phNo,style: TextStyle(fontWeight: FontWeight.bold,fontSize: 20),),
+//                               SizedBox(height: 15,),
+//                               Text('Employee Name',style: TextStyle(color: Colors.grey,),textAlign: TextAlign.left,) ,
+//                               Text(employeeName,style: TextStyle(fontWeight: FontWeight.bold,fontSize: 20),),
+//                               SizedBox(height: 15,),
+// //                              Text('Purpose',style: TextStyle(color: Colors.grey,),textAlign: TextAlign.left,),
+// //                              Text(purpose,style: TextStyle(fontWeight: FontWeight.bold,fontSize: 20),),
+//                             ],
+//                           ),Padding(
+//                             padding: const EdgeInsets.all(8.0),
+//                             child: Container(
+//                               height: 190.0,
+//                               width: 1.0,
+//                               color: Colors.black,
+//                             ),
+//                           ),
+//                           Padding(
+//                             padding: const EdgeInsets.all(2.0),
+//                             child: Column(crossAxisAlignment: CrossAxisAlignment.start,
+//                               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+//                               children: [
+//                                 Text('Visit Time',style: TextStyle(color: Colors.grey,),textAlign: TextAlign.left,) ,
+//                                 Text(visitTime,style: TextStyle(fontWeight: FontWeight.bold,fontSize: 20),),
+//                                 SizedBox(height: 15,),
+//                                 Text('Check-in Time',style: TextStyle(color: Colors.grey,),textAlign: TextAlign.left,),
+//                                 Text(checkinTime,style: TextStyle(fontWeight: FontWeight.bold,fontSize: 20,color: Colors.indigo),),
+//                                 SizedBox(height: 15,),
+//                                 Text('Check-out Time ',style: TextStyle(color: Colors.grey,),textAlign: TextAlign.left,),
+//                                 Text(checkOutTime,style: TextStyle(fontWeight: FontWeight.bold,fontSize: 20,color: Colors.red),),
+//                                 SizedBox(height: 15,),
+//                               ],
+//                             ),
+//                           )
+//                         ],
+//                       ),
+//                       Padding(
+//                         padding: const EdgeInsets.all(10.0),
+//                         child: Container(
+//                           height: 1.0,
+//                           width: 250.0,
+//                           color: Colors.black,
+//                         ),
+//                       ),
+//                       Text('Purpose of Visit',style: TextStyle(color: Colors.grey,),textAlign: TextAlign.left,) ,
+//                       Text(purpose,style: TextStyle(fontWeight: FontWeight.bold,fontSize: 20),),
+//                       SizedBox(height: 15,),
+//                       Text('Total Visitors',style: TextStyle(color: Colors.grey,),textAlign: TextAlign.left,) ,
+//                       Text(totalVisitor,style: TextStyle(fontWeight: FontWeight.bold,fontSize: 25),),
+//
+//
+//                     ],
+//                   ),
+//                 ),
+//                 actions: <Widget>[
+//                   Padding(
+//                     padding: const EdgeInsets.symmetric(horizontal: 35),
+//                     child: FlatButton(
+//                       child: Text('OK'),
+//                       onPressed: () {
+//                         Navigator.pop(context);
+//                       },
+//                     ),
+//                   ),
+//                   Padding(
+//                     padding: const EdgeInsets.symmetric(horizontal: 35),
+//                     child: FlatButton(
+//                       child: Text(
+//                         'Check-out',style: TextStyle(color: Colors.red),
+//                       ),
+//                       onPressed: guest_status == '2' ||
+//                           guest_status == '4' ||
+//                           guest_status == '1'
+//                           ? null
+//                           : () async {
+//                         print(' fuck you');
+//                       },
+//                     ),
+//                   ),
+//
+//
+//                 ],
+//               );
+//             });
+//         //LowView(name: name,phNo: phNo,checkInTime: checkInTime,totalVisitor: totalVisitor,visitTime: visitTime,);
+//       },
+//       child: Card(
+//           color: Colors.white,
+//           child: Padding(
+//             padding: const EdgeInsets.all(8.0),
+//             child: Column(
+//               crossAxisAlignment: CrossAxisAlignment.start,
+//               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+//               children: [
+//                 Row(
+//                   children: [
+//                     Stack(
+//                       children: [
+//
+//                         CircleAvatar(
+//                           backgroundImage:NetworkImage(visitorImage,scale: 5),
+//                           backgroundColor: Colors.transparent,
+//                           radius: 25,
+//                           //backgroundImage: ImageProvider(AssetImage('images/DANKJI.png')),
+//                         ),
+//                       ],
+//                     ),
+//                     SizedBox(
+//                       width: 20,
+//                     ),
+//                     Column(
+//                       mainAxisAlignment: MainAxisAlignment.center,
+//                       children: [
+//                         Padding(
+//                           padding: const EdgeInsets.all(8.0),
+//                           child: Text('Visit Time'),
+//                         ),
+//                         Padding(
+//                           padding: const EdgeInsets.all(8.0),
+//                           child: Text('$visitTime'),
+//                         ),
+//                       ],
+//                     )
+//                   ],
+//                 ),
+//                 Text(
+//                   '$name',
+//                   style: TextStyle(fontWeight: FontWeight.bold),
+//                 ),
+//                 Text('$phNo'),
+//                 Text(
+//                   'Check out: $checkOutTime',
+//                   style: TextStyle(color: Colors.green),
+//                 ),
+//                 Text('Total Visitor :$totalVisitor'),
+//               ],
+//             ),
+//           )),
+//     );
+//   }
+// }
 

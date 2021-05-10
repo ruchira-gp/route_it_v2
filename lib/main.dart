@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:route_it_v2/ri/screen/HomePage.dart';
 import 'package:route_it_v2/ri/screen/QIBusHome.dart';
 import 'package:route_it_v2/ri/screen/QIBusSignIn.dart';
 
@@ -46,7 +47,7 @@ class App extends StatelessWidget {
                 if (user == null) {
                   return QIBusSignIn();
                 } else {
-                  return QIBusHome();
+                  return NavigatorPage();
                 }
               }
             },
