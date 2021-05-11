@@ -9,7 +9,7 @@ import 'package:route_it_v2/ri/screen/QIBusHome.dart';
 import 'package:route_it_v2/ri/screen/preferenceSelection.dart';
 import 'package:route_it_v2/ri/screen/progressDialog.dart';
 import 'package:route_it_v2/ri/screen/registrationScreen.dart';
-import 'package:route_it_v2/ri/screen/temp.dart';
+import 'package:route_it_v2/ri/screen/DisplayAllRoutes.dart';
 import 'package:route_it_v2/ri/utils/QiBusColors.dart';
 import 'package:route_it_v2/ri/utils/QiBusConstant.dart';
 import 'package:route_it_v2/ri/utils/QiBusExtension.dart';

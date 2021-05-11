@@ -10,7 +10,7 @@ import 'package:route_it_v2/ri/screen/FirstPreferencePage.dart';
 import 'package:route_it_v2/ri/screen/HomePage.dart';
 import 'package:route_it_v2/ri/screen/QIBusNotification.dart';
 import 'package:route_it_v2/ri/screen/RouteUpload.dart';
-import 'package:route_it_v2/ri/screen/temp.dart';
+import 'package:route_it_v2/ri/screen/DisplayAllRoutes.dart';
 import 'package:route_it_v2/ri/utils/QiBusColors.dart';
 import 'package:route_it_v2/ri/utils/QiBusConstant.dart';
 import 'package:route_it_v2/ri/utils/QiBusDataGenerator.dart';
@@ -25,7 +25,7 @@ import 'QIBusSearhList.dart';
 import 'QIBusSignIn.dart';
 import 'QIBusViewOffer.dart';
 import 'dart:collection';
-
+import 'package:route_it_v2/ri/screen/DisplaySearchedRoutes.dart';
 
 class QIBusHome extends StatefulWidget {
   @override
@@ -208,6 +208,12 @@ class _QIBusHomeState extends State<QIBusHome> {
             child: Text("Display routes"),
             onPressed: (){
               Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => DisplayAllRoutes()));
+            },
+          ),),
+          Center(child: ElevatedButton(
+            child: Text("Search routes"),
+            onPressed: (){
+              Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => DisplaySearchedRoutes()));
             },
           ),),
         ],
