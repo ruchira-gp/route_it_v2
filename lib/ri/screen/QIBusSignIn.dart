@@ -17,8 +17,8 @@ import 'package:route_it_v2/ri/utils/QiBusImages.dart';
 import 'package:route_it_v2/ri/utils/QiBusStrings.dart';
 import 'package:route_it_v2/ri/utils/QiBusWidget.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:route_it_v2/ri/utils/RetrieveUserPreference.dart';
 
+import 'package:route_it_v2/ri/utils/AllRequiredFunctions.dart';
 import 'package:route_it_v2/ri/utils/codePicker/country_code_picker.dart';
 
 import '../../main.dart';
@@ -201,7 +201,7 @@ class QIBusSignInState extends State<QIBusSignIn> {
       );
       var hello;
       if (userCredential!=null){
-        retrievePreference().then((s) {
+        retrievePreferenceFlag().then((s) {
           if(s==0)
             {
               Navigator.pushAndRemoveUntil(  context,
@@ -213,7 +213,7 @@ class QIBusSignInState extends State<QIBusSignIn> {
           else
             {
               Navigator.pushAndRemoveUntil(  context,
-                MaterialPageRoute(builder: (BuildContext context) => NavigatorPage()),
+                MaterialPageRoute(builder: (BuildContext context) => QIBusHome()),
                 ModalRoute.withName('/'),);
               // Navigator.pushNamedAndRemoveUntil(context, HomeScreen.idScreen, (route) => false);
               displayToastMessage("You have successfully logged-in", context);

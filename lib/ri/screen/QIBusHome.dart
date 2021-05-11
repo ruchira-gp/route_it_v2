@@ -7,6 +7,7 @@ import 'package:intl/intl.dart';
 import 'package:nb_utils/nb_utils.dart';
 import 'package:route_it_v2/ri/model/QiBusModel.dart';
 import 'package:route_it_v2/ri/screen/FirstPreferencePage.dart';
+import 'package:route_it_v2/ri/screen/HomePage.dart';
 import 'package:route_it_v2/ri/screen/QIBusNotification.dart';
 import 'package:route_it_v2/ri/screen/RouteUpload.dart';
 import 'package:route_it_v2/ri/screen/temp.dart';
@@ -18,16 +19,14 @@ import 'package:route_it_v2/ri/utils/QiBusImages.dart';
 import 'package:route_it_v2/ri/utils/QiBusStrings.dart';
 import 'package:route_it_v2/ri/utils/QiBusWidget.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:route_it_v2/ri/utils/RecommendationSys.dart';
-import 'package:route_it_v2/ri/utils/RetrieveUserPreference.dart';
+import 'package:route_it_v2/ri/utils/AllRequiredFunctions.dart';
 import 'package:document_analysis/document_analysis.dart';
 import 'QIBusSearhList.dart';
 import 'QIBusSignIn.dart';
 import 'QIBusViewOffer.dart';
 import 'dart:collection';
-import 'package:route_it_v2/ri/screen/HomePage.dart';
-List<TripDetails> allTripDetails=[];
-List <String> allDocId=[];
+
+
 class QIBusHome extends StatefulWidget {
   @override
   _QIBusHomeState createState() => _QIBusHomeState();
@@ -35,121 +34,190 @@ class QIBusHome extends StatefulWidget {
 
 class _QIBusHomeState extends State<QIBusHome> {
 
-
-  cosineDistForAllTripDetails() {
-    var listInt1 = B[0];
-    var listInt2 = userPreference;
-    var listDouble =
-    listInt1.map((i) => int.parse(i.toString()).toDouble()).toList();
-    listDouble = listDouble.cast<double>();
-    var userPreferenceDouble =
-    userPreference.map((i) => int.parse(i.toString()).toDouble()).toList();
-   // print("listDouble=$listDouble");
-   // print("userPreferenceDouble=$userPreferenceDouble");
-    // List<double> cosineValue;
-    // for(var i=1;i<listDouble.length;i++){
-    //   print(listDouble[i]);
-    // }
-    // List<double> cosineValues=[];
-    // double x=1-cosineDistance(listDouble,userPreferenceDouble);
-    // print(x);
-    // print(x.runtimeType);
-    // cosineValues.add(x);
-    // print(cosineValues);
-
-    //cosineValues.add(1-cosineDistance(listDouble,userPreferenceDouble));
-    //print(cosineValues);
-    //print("Cosine: ${1-cosineDistance(listDouble,userPreferenceDouble)}");//0.1
-
-    List routeRating = B;
-    List<double> cosineValues = [];
-
-    for (var i = 0; i < routeRating.length; i++) {
-     // print(routeRating[i]);
-      var temp = routeRating[i];
-      //  print(routeRating[i].runtimeType);
-      var tempDouble =
-      temp.map((i) => int.parse(i.toString()).toDouble()).toList();
-      tempDouble = tempDouble.cast<double>();
-      // print(tempDouble);
-      //print("Cosine: ${1-cosineDistance(tempDouble,userPreferenceDouble)}");
-      double x = 1 - cosineDistance(tempDouble, userPreferenceDouble);
-      //  print(x);
-      //  print(x.runtimeType);
-      cosineValues.add(x);
-      //  print("---");
-    }
-    //print(cosineValues);
-    var finalList = new Map();
-
-    for (var x = 0; x < cosineValues.length; x++) {
-      finalList[docId[x]] = cosineValues[x];
-    }
-   // print(finalList);
-    var sortedKeys = finalList.keys.toList(growable: false)
-      ..sort((k1, k2) => finalList[k2].compareTo(finalList[k1]));
-    LinkedHashMap sortedMap = new LinkedHashMap.fromIterable(sortedKeys,
-        key: (k) => k, value: (k) => finalList[k]);
-    // print(sortedMap);
-    sortedMap.forEach((key, value) {
-      allDocId.add(key);
-    });
-    print('This is allDocId lis .........');
-    print(allDocId);
-
-  }
-  getAllTripDetailsAccordingToPreference()async {
-
-    final firestoreInstance = FirebaseFirestore.instance;
-    String desc="";
-    String title="";
-    String tripImage="";
-    String toCity="";
-    String fromCity="";
-    allDocId.forEach((element) async{
-      await firestoreInstance.collection("trip").doc(element).get().then((value){
-        setState(() {
-          desc=(value.data()["info"]['desc']);
-          title=(value.data()["info"]['title']);
-          tripImage=(value.data()["info"]['photo']);
-          toCity=(value.data()['route']["route_info"]['to']);
-          fromCity=(value.data()['route']["route_info"]['from']);
-        });
-
-      });
-      if(allTripDetails.length<=allDocId.length) {
-        allTripDetails.add(TripDetails(desc: desc,
-          title: title,
-          tripImage: tripImage,
-          toCity: toCity,
-          fromCity: fromCity,));
-      }
-    });
-    print(allTripDetails);
-
-  }
-  doThisForList()async{
-    await cosineDistForAllTripDetails();
-    await getAllTripDetailsAccordingToPreference();
-   // print('all trip details');
   //
-  }
+  // cosineDistForAllTripDetails() {
+  //   var listInt1 = B[0];
+  //   var listInt2 = userPreference;
+  //   var listDouble =
+  //   listInt1.map((i) => int.parse(i.toString()).toDouble()).toList();
+  //   listDouble = listDouble.cast<double>();
+  //   var userPreferenceDouble =
+  //   userPreference.map((i) => int.parse(i.toString()).toDouble()).toList();
+  //  // print("listDouble=$listDouble");
+  //  // print("userPreferenceDouble=$userPreferenceDouble");
+  //   // List<double> cosineValue;
+  //   // for(var i=1;i<listDouble.length;i++){
+  //   //   print(listDouble[i]);
+  //   // }
+  //   // List<double> cosineValues=[];
+  //   // double x=1-cosineDistance(listDouble,userPreferenceDouble);
+  //   // print(x);
+  //   // print(x.runtimeType);
+  //   // cosineValues.add(x);
+  //   // print(cosineValues);
+  //
+  //   //cosineValues.add(1-cosineDistance(listDouble,userPreferenceDouble));
+  //   //print(cosineValues);
+  //   //print("Cosine: ${1-cosineDistance(listDouble,userPreferenceDouble)}");//0.1
+  //
+  //   List routeRating = B;
+  //   List<double> cosineValues = [];
+  //
+  //   for (var i = 0; i < routeRating.length; i++) {
+  //    // print(routeRating[i]);
+  //     var temp = routeRating[i];
+  //     //  print(routeRating[i].runtimeType);
+  //     var tempDouble =
+  //     temp.map((i) => int.parse(i.toString()).toDouble()).toList();
+  //     tempDouble = tempDouble.cast<double>();
+  //     // print(tempDouble);
+  //     //print("Cosine: ${1-cosineDistance(tempDouble,userPreferenceDouble)}");
+  //     double x = 1 - cosineDistance(tempDouble, userPreferenceDouble);
+  //     //  print(x);
+  //     //  print(x.runtimeType);
+  //     cosineValues.add(x);
+  //     //  print("---");
+  //   }
+  //   //print(cosineValues);
+  //   var finalList = new Map();
+  //
+  //   for (var x = 0; x < cosineValues.length; x++) {
+  //     finalList[docId[x]] = cosineValues[x];
+  //   }
+  //  // print(finalList);
+  //   var sortedKeys = finalList.keys.toList(growable: false)
+  //     ..sort((k1, k2) => finalList[k2].compareTo(finalList[k1]));
+  //   LinkedHashMap sortedMap = new LinkedHashMap.fromIterable(sortedKeys,
+  //       key: (k) => k, value: (k) => finalList[k]);
+  //   // print(sortedMap);
+  //   sortedMap.forEach((key, value) {
+  //     allDocId.add(key);
+  //   });
+  //   print('This is allDocId lis .........');
+  //   print(allDocId);
+  //
+  // }
+  // getAllTripDetailsAccordingToPreference()async {
+  //
+  //   final firestoreInstance = FirebaseFirestore.instance;
+  //   String desc="";
+  //   String title="";
+  //   String tripImage="";
+  //   String toCity="";
+  //   String fromCity="";
+  //   allDocId.forEach((element) async{
+  //     await firestoreInstance.collection("trip").doc(element).get().then((value){
+  //       setState(() {
+  //         desc=(value.data()["info"]['desc']);
+  //         title=(value.data()["info"]['title']);
+  //         tripImage=(value.data()["info"]['photo']);
+  //         toCity=(value.data()['route']["route_info"]['to']);
+  //         fromCity=(value.data()['route']["route_info"]['from']);
+  //       });
+  //       print('$desc + $title + $toCity');
+  //       // allTripDetails.add(TripDetails(desc: desc,
+  //       //   title: title,
+  //       //   tripImage: tripImage,
+  //       //   toCity: toCity,
+  //       //   fromCity: fromCity,));
+  //     });
+  //
+  //   });
+  //   print(allTripDetails);
+  //
+  // }
+//   doThisForList()async{
+// //    await retrieveDocId();
+//     await cosineDistForAllTripDetails();
+//     await getAllTripDetailsAccordingToPreference();
+//    // print('all trip details');
+//   //
+//   }
   @override
   void initState() {
+    //doThisForList();
     // TODO: implement initState
     super.initState();
-    doThisForList();
+
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: GridView(
-        gridDelegate:
-        SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2),
-        padding: EdgeInsets.symmetric(vertical: 8.0),
-        children: allTripDetails,
+      appBar: AppBar(),
+      body: Column(
+        children: [
+          Center(child: ElevatedButton(
+            child: Text('Compute'),
+            onPressed: (){
+              retrieveAllDocIds();
+              retrieveRoutePreferences();
+              retrieveUserRoutePreference();
+              getToList();
+              getFromList();
+              getToFromList('Mysore');
+              print('Compute');
+            },
+
+          ),),
+          Center(child: ElevatedButton(
+            child: Text("CosineDist"),
+            onPressed: (){
+              cosineDist();
+              sortDocIdsAfterCosine();
+              print('Cosine Distance');
+            },
+          ),),
+          Center(child: ElevatedButton(
+            child: Text("Trip Details"),
+            onPressed: (){
+              print("Trip Details");
+              getAllRoutesAccordingToPreference();
+            },
+          ),),
+          Center(child: ElevatedButton(
+            child: Text("Print"),
+            onPressed: (){
+              printAllDetails();
+            },
+          ),),
+
+          Center(child: ElevatedButton(
+            child: Text("clear"),
+            onPressed: (){
+              print("cleared");
+              allDocIds.clear();
+              nestedRoutePreferences.clear();
+              currentUserPreference.clear();
+              sortedDocIds.clear();
+              sortedMap.clear();
+              toList.clear();
+              fromList.clear();
+              toFromList.clear();
+              allRoutesAccordingToPreference.clear();
+
+            },
+          ),),
+          Center(child: ElevatedButton(
+            child: Text("Logout"),
+            onPressed: (){
+              signOut(context);
+            },
+          ),),
+          Center(child: ElevatedButton(
+            child: Text("Display routes"),
+            onPressed: (){
+              Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => DisplayAllRoutes()));
+            },
+          ),),
+        ],
       ),
+      // body: GridView(
+      //   gridDelegate:
+      //   SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2),
+      //   padding: EdgeInsets.symmetric(vertical: 8.0),
+      //   children: allTripDetails,
+      // ),
     );
   }
 }

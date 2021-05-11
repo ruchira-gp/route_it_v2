@@ -47,7 +47,7 @@ class App extends StatelessWidget {
                 if (user == null) {
                   return QIBusSignIn();
                 } else {
-                  return NavigatorPage();
+                  return QIBusHome();
                 }
               }
             },
