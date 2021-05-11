@@ -62,44 +62,5 @@ class App extends StatelessWidget {
   }
 }
 
-// class MyApp extends StatelessWidget {
-//   final Future<FirebaseApp> _initialization = Firebase.initializeApp();
-//   // This widget is the root of your application.
-//   @override
-//   Widget build(BuildContext context) {
-//     return FutureBuilder(
-//       // Initialize FlutterFire:
-//       future: _initialization,
-//       builder: (context, snapshot) {
-//         // Check for errors
-//         if (snapshot.hasError) {
-//           print('SOmewtging went rwomg');
-//         }
-//
-//         // Once complete, show your application
-//         if (snapshot.connectionState == ConnectionState.done) {
-//           return StreamBuilder(
-//             stream: FirebaseAuth.instance.authStateChanges(),
-//             builder: (context, snapshot) {
-//               if (snapshot.connectionState == ConnectionState.active) {
-//                 User user = snapshot.data;
-//                 if (user == null) {
-//                   return LoginScreen();
-//                 } else {
-//                   return HomeScreen();
-//                 }
-//               }
-//             },
-//           );
-//         }
-//         // Otherwise, show something whilst waiting for initialization to complete
-//         return Scaffold(
-//           body: Text('loading'),
-//         );
-//         // print('loading');
-//       },
-//     );
-//   }
-//
-// }
+
 

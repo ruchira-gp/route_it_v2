@@ -40,6 +40,9 @@ class _MyStatefulWidgetState extends State<FirstPreference> {
               "prefs.desert" : _items.length-_items.indexOf("Desert"),
             }).then((_) {
               print("success!");
+              Navigator.pushAndRemoveUntil(  context,
+                MaterialPageRoute(builder: (BuildContext context) => QIBusHome()),
+                ModalRoute.withName('/'),);
             });
           },
           child: const Icon(Icons.done),

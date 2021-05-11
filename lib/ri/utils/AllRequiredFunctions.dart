@@ -16,7 +16,7 @@ List<String> sortedDocIds = [];// List of all sorted Document IDs after cosine f
 var toList = []; // toCity List
 var fromList = []; // fromCity list
 var toFromList = []; // toCity list , given fromCity
-List<TripDetails> allRoutesAccordingToPreference=[];
+List<TripDetails> allRoutesAccordingToPreference=[]; // List of all routes
 
 
 
@@ -237,42 +237,32 @@ cosineDist() {
 
   List routeRating = nestedRoutePreferences;
   List<double> cosineValues = [];
-
   for (var i = 0; i < routeRating.length; i++) {
-    //print(routeRating[i]);
     var temp = routeRating[i];
-    //print(routeRating[i].runtimeType);
     var tempDouble =
     temp.map((i) => int.parse(i.toString()).toDouble()).toList();
     tempDouble = tempDouble.cast<double>();
-    //print(tempDouble);
     var userPreferenceDouble =
     currentUserPreference.map((i) => int.parse(i.toString()).toDouble()).toList();
-    //print("Cosine: ${1-cosineDistance(tempDouble,userPreferenceDouble)}");
     double x = 1 - cosineDistance(tempDouble, userPreferenceDouble);
-   // print(x);
-   // print(x.runtimeType);
     cosineValues.add(x);
-   // print("---");
   }
- // print(cosineValues);
   var finalList = new Map();
-
   for (var x = 0; x < cosineValues.length; x++) {
     finalList[allDocIds[x]] = cosineValues[x];
   }
- // print(finalList);
   var sortedKeys = finalList.keys.toList(growable: false)
     ..sort((k1, k2) => finalList[k2].compareTo(finalList[k1]));
   sortedMap = LinkedHashMap.fromIterable(sortedKeys,
       key: (k) => k, value: (k) => finalList[k]);
-  //print(sortedMap);
 
 }
 
 
 //----------------------------------------------------------------------------------------------
-//Sprting docids in sortMap and storing it in sortedDocIds
+
+
+//Sorting docids in sortMap and storing it in sortedDocIds
 sortDocIdsAfterCosine(){
   sortedMap.forEach((key, value) {
     sortedDocIds.add(key);
@@ -352,7 +342,8 @@ getToFromList(String fromCity) async {
   });
 }
 
-//----------------------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------------
+// Converts the route details into object of type TripDetails and stores it in allRoutesAccordingToPreference
 
 getAllRoutesAccordingToPreference(){
   final firestoreInstance = FirebaseFirestore.instance;
@@ -362,7 +353,6 @@ getAllRoutesAccordingToPreference(){
   String toCity="";
   String fromCity="";
   sortedDocIds.forEach((element) async{
-   // print("docid = $element");
     await firestoreInstance.collection("trip").doc(element).get().then((value){
       desc=(value.data()["info"]['desc']);
       title=(value.data()["info"]['title']);
@@ -377,18 +367,6 @@ getAllRoutesAccordingToPreference(){
 
 
 //----------------------------------------------------------------------------------------------
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 printAllDetails() {
