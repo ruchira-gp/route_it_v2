@@ -17,7 +17,6 @@ class _DisplayAllRoutesState extends State<DisplayAllRoutes> {
     Widget build(BuildContext context) {
       return Scaffold(
         backgroundColor: Colors.white70,
-        appBar: buildBar(context),
         body: GridView(
           gridDelegate:
           SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2),

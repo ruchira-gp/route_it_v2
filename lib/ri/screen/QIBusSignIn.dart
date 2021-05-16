@@ -213,7 +213,7 @@ class QIBusSignInState extends State<QIBusSignIn> {
           else
             {
               Navigator.pushAndRemoveUntil(  context,
-                MaterialPageRoute(builder: (BuildContext context) => QIBusHome()),
+                MaterialPageRoute(builder: (BuildContext context) => NavigatorPage()),
                 ModalRoute.withName('/'),);
               // Navigator.pushNamedAndRemoveUntil(context, HomeScreen.idScreen, (route) => false);
               displayToastMessage("You have successfully logged-in", context);

@@ -37,16 +37,7 @@ class _QIBusHomeState extends State<QIBusHome> {
   @override
   void initState() {
     // TODO: implement initState
-    retrieveAllDocIds();
-    retrieveRoutePreferences();
-    retrieveUserRoutePreference();
-    getToList();
-    getFromList();
-    getToFromList('Mysore');
-    print('Compute');
-    cosineDist();
-    sortDocIdsAfterCosine();
-    print('Cosine Distance');
+
     super.initState();
 
   }
@@ -127,6 +118,93 @@ class _QIBusHomeState extends State<QIBusHome> {
             },
           ),),
         ],
+      ),
+    );
+  }
+}
+
+
+class NavigatorPage extends StatefulWidget {
+
+
+  @override
+  State<NavigatorPage> createState() => _NavigatorPageState();
+}
+
+/// This is the private State class that goes with MyStatefulWidget.
+class _NavigatorPageState extends State<NavigatorPage> {
+
+  int _selectedIndex = 1;
+  static const TextStyle optionStyle =
+  TextStyle(fontSize: 30, fontWeight: FontWeight.bold);
+    List<Widget> _widgetOptions = <Widget>[
+      DisplaySearchedRoutes(),
+      QIBusHome(),
+     // DisplayAllRoutes(),
+      RouteUpload(),
+
+  ];
+
+  void _onItemTapped(int index) {
+    setState(() {
+      _selectedIndex = index;
+    });
+  }
+
+  doThis()async{
+     await retrieveAllDocIds();
+     await retrieveRoutePreferences();
+     await retrieveUserRoutePreference();
+     await getToList();
+     await getFromList();
+     await  getToFromList('Mysore');
+     await cosineDist();
+     await  sortDocIdsAfterCosine();
+     await getAllRoutesAccordingToPreference();
+     await printAllDetails();
+
+  }
+@override
+  void initState() {
+    // TODO: implement initState
+
+    super.initState();
+
+
+  }
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        actions: [
+          ElevatedButton(onPressed: (){
+            clearAllData();
+            signOut(context);
+          }, child: Icon(Icons.power_settings_new_sharp))
+        ],
+        title: Center(child: const Text('Route It')),
+      ),
+      body: Center(
+        child: _widgetOptions.elementAt(_selectedIndex),
+      ),
+      bottomNavigationBar: BottomNavigationBar(
+        items: const <BottomNavigationBarItem>[
+          BottomNavigationBarItem(
+            icon: Icon(Icons.search),
+            label: 'Search',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.home),
+            label: 'Home',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.upload_rounded),
+            label: 'Upload Route',
+          ),
+        ],
+        currentIndex: _selectedIndex,
+        selectedItemColor: Colors.amber[800],
+        onTap: _onItemTapped,
       ),
     );
   }

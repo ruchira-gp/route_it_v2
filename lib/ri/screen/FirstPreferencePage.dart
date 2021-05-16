@@ -41,7 +41,7 @@ class _MyStatefulWidgetState extends State<FirstPreference> {
             }).then((_) {
               print("success!");
               Navigator.pushAndRemoveUntil(  context,
-                MaterialPageRoute(builder: (BuildContext context) => QIBusHome()),
+                MaterialPageRoute(builder: (BuildContext context) => NavigatorPage()),
                 ModalRoute.withName('/'),);
             });
           },
@@ -51,7 +51,7 @@ class _MyStatefulWidgetState extends State<FirstPreference> {
       actions: [
 
         ElevatedButton(onPressed: (){
-          Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => QIBusHome()));
+          Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => NavigatorPage()));
         }, child: Icon(Icons.home)),
 
       ],),

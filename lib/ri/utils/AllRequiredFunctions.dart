@@ -345,7 +345,7 @@ getToFromList(String fromCity) async {
 //--------------------------------------------------------------------------------------------------------
 // Converts the route details into object of type TripDetails and stores it in allRoutesAccordingToPreference
 
-getAllRoutesAccordingToPreference(){
+getAllRoutesAccordingToPreference()async{
   final firestoreInstance = FirebaseFirestore.instance;
   String desc="";
   String title="";
@@ -362,6 +362,7 @@ getAllRoutesAccordingToPreference(){
     });
     allRoutesAccordingToPreference.add(TripDetails(desc: desc,title: title,tripImage: tripImage,toCity: toCity,fromCity: fromCity,));
   });
+
 
 }
 
@@ -393,4 +394,15 @@ printAllDetails() {
 }
 
 
-
+clearAllData(){
+  print("cleared");
+  allDocIds.clear();
+  nestedRoutePreferences.clear();
+  currentUserPreference.clear();
+  sortedDocIds.clear();
+  sortedMap.clear();
+  toList.clear();
+  fromList.clear();
+  toFromList.clear();
+  allRoutesAccordingToPreference.clear();
+}
