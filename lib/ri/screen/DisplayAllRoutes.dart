@@ -9,6 +9,7 @@ class DisplayAllRoutes extends StatefulWidget {
 }
 
 class _DisplayAllRoutesState extends State<DisplayAllRoutes> {
+  final key = GlobalKey<ScaffoldState>();
   Widget appBarTitle = Text(
     "Trips",
     style: TextStyle(color: Colors.white),
@@ -16,6 +17,7 @@ class _DisplayAllRoutesState extends State<DisplayAllRoutes> {
     @override
     Widget build(BuildContext context) {
       return Scaffold(
+        key: key,
         backgroundColor: Colors.white70,
         body: GridView(
           gridDelegate:

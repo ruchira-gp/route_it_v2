@@ -46,6 +46,7 @@ dependencies:
   permission_handler: ^7.0.0
   dart_now_time_filename: ^0.1.1
   document_analysis: ^0.1.2
+  progress_dialog: ^1.2.4
   flutter_localizations:
     sdk: flutter
 

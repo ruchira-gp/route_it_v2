@@ -9,14 +9,14 @@ import 'package:route_it_v2/ri/screen/QIBusSignIn.dart';
 
 
 List<String> allDocIds = []; // List of all Document ID
-List nestedRoutePreferences = []; // List of List of route prefs
-List currentUserPreference = []; // Current user pref
+// List nestedRoutePreferences = []; // List of List of route prefs
+// List currentUserPreference = []; // Current user pref
 LinkedHashMap sortedMap; // sorted map got after cosine function
 List<String> sortedDocIds = [];// List of all sorted Document IDs after cosine function
 var toList = []; // toCity List
 var fromList = []; // fromCity list
 var toFromList = []; // toCity list , given fromCity
-List<TripDetails> allRoutesAccordingToPreference=[]; // List of all routes
+List<TripDetails> allRoutesAccordingToPreference = [] ; // List of all routes
 
 
 
@@ -176,9 +176,90 @@ retrieveAllDocIds() async {
 //----------------------------------------------------------------------------------------------
 // Retrieves all route preferences as list of list and stores it in nestedRoutePreferences
 retrieveRoutePreferences() async {
+  // final firestoreInstance = FirebaseFirestore.instance;
+  // firestoreInstance.collection('trip').get().then((querySnapshot) {
+  //   querySnapshot.docs.forEach((result) {
+  //     List X = [];
+  //     X.clear();
+  //     String a = "", b = "", c = "", d = "", e = "", f = "";
+  //     //print(result.id);
+  //     a = result.data()['route']['prefs']['desert'];
+  //     b = result.data()['route']['prefs']['forest'];
+  //     c = result.data()['route']['prefs']['highway'];
+  //     d = result.data()['route']['prefs']['mountain'];
+  //     e = result.data()['route']['prefs']['pilgrimage'];
+  //     f = result.data()['route']['prefs']['riverside'];
+  //     X.add(a);
+  //     X.add(b);
+  //     X.add(c);
+  //     X.add(d);
+  //     X.add(e);
+  //     X.add(f);
+  //
+  //     nestedRoutePreferences.add(X);
+  //   });
+  // });
+}
+
+//----------------------------------------------------------------------------------------------
+// Retrieves Current User route preferences as list  and stores it in currentUserPreference
+
+retrieveUserRoutePreference() {
+  // var firebaseUser = FirebaseAuth.instance.currentUser;
+  // final firestoreInstance = FirebaseFirestore.instance;
+  //
+  // firestoreInstance
+  //     .collection("users")
+  //     .doc(firebaseUser.uid)
+  //     .get()
+  //     .then((result) {
+  //   int a = 0, b = 0, c = 0, d = 0, e = 0, f = 0;
+  //   //print(result.id);
+  //   a = result.data()['prefs']['desert'];
+  //   b = result.data()['prefs']['forest'];
+  //   c = result.data()['prefs']['highway'];
+  //   d = result.data()['prefs']['mountain'];
+  //   e = result.data()['prefs']['pilgrimage'];
+  //   f = result.data()['prefs']['riverside'];
+  //   currentUserPreference.add(a);
+  //   currentUserPreference.add(b);
+  //   currentUserPreference.add(c);
+  //   currentUserPreference.add(d);
+  //   currentUserPreference.add(e);
+  //   currentUserPreference.add(f);
+  // });
+}
+
+//----------------------------------------------------------------------------------------------
+// Retrieves Cosine Sorted  as Map  and stores it in sortedMap
+cosineDist() async{
+  List nestedRoutePreferences = []; // List of List of route prefs
+  List currentUserPreference = [];
   var firebaseUser = FirebaseAuth.instance.currentUser;
   final firestoreInstance = FirebaseFirestore.instance;
-  firestoreInstance.collection('trip').get().then((querySnapshot) {
+
+ await firestoreInstance
+      .collection("users")
+      .doc(firebaseUser.uid)
+      .get()
+      .then((result) {
+    int a = 0, b = 0, c = 0, d = 0, e = 0, f = 0;
+    //print(result.id);
+    a = result.data()['prefs']['desert'];
+    b = result.data()['prefs']['forest'];
+    c = result.data()['prefs']['highway'];
+    d = result.data()['prefs']['mountain'];
+    e = result.data()['prefs']['pilgrimage'];
+    f = result.data()['prefs']['riverside'];
+    currentUserPreference.add(a);
+    currentUserPreference.add(b);
+    currentUserPreference.add(c);
+    currentUserPreference.add(d);
+    currentUserPreference.add(e);
+    currentUserPreference.add(f);
+  });
+  //final firestoreInstance = FirebaseFirestore.instance;
+ await firestoreInstance.collection('trip').get().then((querySnapshot) {
     querySnapshot.docs.forEach((result) {
       List X = [];
       X.clear();
@@ -200,62 +281,69 @@ retrieveRoutePreferences() async {
       nestedRoutePreferences.add(X);
     });
   });
-}
 
-//----------------------------------------------------------------------------------------------
-// Retrieves Current User route preferences as list  and stores it in currentUserPreference
+  print('nestedRoutePrefernces == $nestedRoutePreferences');
+  List<dynamic> routeRating = []..addAll(nestedRoutePreferences);
 
-retrieveUserRoutePreference() {
-  var firebaseUser = FirebaseAuth.instance.currentUser;
-  final firestoreInstance = FirebaseFirestore.instance;
-
-  firestoreInstance
-      .collection("users")
-      .doc(firebaseUser.uid)
-      .get()
-      .then((result) {
-    int a = 0, b = 0, c = 0, d = 0, e = 0, f = 0;
-    //print(result.id);
-    a = result.data()['prefs']['desert'];
-    b = result.data()['prefs']['forest'];
-    c = result.data()['prefs']['highway'];
-    d = result.data()['prefs']['mountain'];
-    e = result.data()['prefs']['pilgrimage'];
-    f = result.data()['prefs']['riverside'];
-    currentUserPreference.add(a);
-    currentUserPreference.add(b);
-    currentUserPreference.add(c);
-    currentUserPreference.add(d);
-    currentUserPreference.add(e);
-    currentUserPreference.add(f);
-  });
-}
-
-//----------------------------------------------------------------------------------------------
-// Retrieves Cosine Sorted  as Map  and stores it in sortedMap
-cosineDist() {
-
-  List routeRating = nestedRoutePreferences;
+  //List routeRating = nestedRoutePreferences;
+  print('route Rating = $routeRating');
   List<double> cosineValues = [];
-  for (var i = 0; i < routeRating.length; i++) {
-    var temp = routeRating[i];
+  routeRating.forEach((element) {
+    var temp=element;
     var tempDouble =
     temp.map((i) => int.parse(i.toString()).toDouble()).toList();
     tempDouble = tempDouble.cast<double>();
+    print('tempDouble = $tempDouble');
     var userPreferenceDouble =
     currentUserPreference.map((i) => int.parse(i.toString()).toDouble()).toList();
+    print('userprefernceDouble : $userPreferenceDouble');
     double x = 1 - cosineDistance(tempDouble, userPreferenceDouble);
     cosineValues.add(x);
-  }
+  });
+    //var temp = routeRating[i];
+
+
+  print("hello im cosineDist function");
   var finalList = new Map();
   for (var x = 0; x < cosineValues.length; x++) {
     finalList[allDocIds[x]] = cosineValues[x];
+    //print(finalList);
   }
   var sortedKeys = finalList.keys.toList(growable: false)
     ..sort((k1, k2) => finalList[k2].compareTo(finalList[k1]));
   sortedMap = LinkedHashMap.fromIterable(sortedKeys,
       key: (k) => k, value: (k) => finalList[k]);
+  sortedMap.forEach((key, value) {
+    sortedDocIds.add(key);
+  });
+  print('Sorted DOc ids : $sortedDocIds');
+  List<String> sortedDocIds2 = []..addAll(sortedDocIds);
+  print('Sorted DOc ids2222 : $sortedDocIds');
 
+  //-------------------
+  List<TripDetails> allRoutesAccordingToPreference2 = [] ;
+  String desc="";
+  String title="";
+  String tripImage="";
+  String toCity="";
+  String fromCity="";
+  sortedDocIds2.forEach((element) async{
+    await firestoreInstance.collection("trip").doc(element).get().then((value){
+      desc=(value.data()["info"]['desc']);
+      title=(value.data()["info"]['title']);
+      tripImage=(value.data()["info"]['photo']);
+      toCity=(value.data()['route']["route_info"]['to']);
+      fromCity=(value.data()['route']["route_info"]['from']);
+       allRoutesAccordingToPreference.add(TripDetails(desc: desc,title: title,tripImage: tripImage,toCity: toCity,fromCity: fromCity,));
+
+    });
+     print('title : $title');
+     //allRoutesAccordingToPreference2.add(TripDetails(desc: desc,title: title,tripImage: tripImage,toCity: toCity,fromCity: fromCity,));
+  });
+  allRoutesAccordingToPreference = []..addAll(allRoutesAccordingToPreference2);
+
+  print("allroutes according yo preference22 : $allRoutesAccordingToPreference2");
+  print("allroutes according yo preference : $allRoutesAccordingToPreference");
 }
 
 
@@ -264,9 +352,9 @@ cosineDist() {
 
 //Sorting docids in sortMap and storing it in sortedDocIds
 sortDocIdsAfterCosine(){
-  sortedMap.forEach((key, value) {
-    sortedDocIds.add(key);
-  });
+  // sortedMap.forEach((key, value) {
+  //   sortedDocIds.add(key);
+  // });
 
 }
 
@@ -346,6 +434,8 @@ getToFromList(String fromCity) async {
 // Converts the route details into object of type TripDetails and stores it in allRoutesAccordingToPreference
 
 getAllRoutesAccordingToPreference()async{
+  print('Sorted DOc ids 222222: $sortedDocIds');
+
   final firestoreInstance = FirebaseFirestore.instance;
   String desc="";
   String title="";
@@ -359,11 +449,12 @@ getAllRoutesAccordingToPreference()async{
       tripImage=(value.data()["info"]['photo']);
       toCity=(value.data()['route']["route_info"]['to']);
       fromCity=(value.data()['route']["route_info"]['from']);
+      allRoutesAccordingToPreference.add(TripDetails(desc: desc,title: title,tripImage: tripImage,toCity: toCity,fromCity: fromCity,));
+
     });
-    allRoutesAccordingToPreference.add(TripDetails(desc: desc,title: title,tripImage: tripImage,toCity: toCity,fromCity: fromCity,));
   });
 
-
+  print("allroutes according yo preference : $allRoutesAccordingToPreference");
 }
 
 
@@ -372,9 +463,9 @@ getAllRoutesAccordingToPreference()async{
 
 printAllDetails() {
   print('###### Below : currentUserPreference ######');
-  print(currentUserPreference);
-  print('###### Below : nestedRoutePreferences ######');
-  print(nestedRoutePreferences);
+  // print(currentUserPreference);
+  // print('###### Below : nestedRoutePreferences ######');
+  // print(nestedRoutePreferences);
   print('###### Below : allDocIds ######');
   print(allDocIds);
   print("SOrted Map");
@@ -397,8 +488,8 @@ printAllDetails() {
 clearAllData(){
   print("cleared");
   allDocIds.clear();
-  nestedRoutePreferences.clear();
-  currentUserPreference.clear();
+  // nestedRoutePreferences.clear();
+  // currentUserPreference.clear();
   sortedDocIds.clear();
   sortedMap.clear();
   toList.clear();

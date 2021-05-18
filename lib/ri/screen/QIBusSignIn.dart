@@ -7,7 +7,6 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:route_it_v2/ri/screen/FirstPreferencePage.dart';
 import 'package:route_it_v2/ri/screen/QIBusHome.dart';
 import 'package:route_it_v2/ri/screen/preferenceSelection.dart';
-import 'package:route_it_v2/ri/screen/progressDialog.dart';
 import 'package:route_it_v2/ri/screen/registrationScreen.dart';
 import 'package:route_it_v2/ri/screen/DisplayAllRoutes.dart';
 import 'package:route_it_v2/ri/utils/QiBusColors.dart';
@@ -17,7 +16,7 @@ import 'package:route_it_v2/ri/utils/QiBusImages.dart';
 import 'package:route_it_v2/ri/utils/QiBusStrings.dart';
 import 'package:route_it_v2/ri/utils/QiBusWidget.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-
+import 'package:progress_dialog/progress_dialog.dart';
 import 'package:route_it_v2/ri/utils/AllRequiredFunctions.dart';
 import 'package:route_it_v2/ri/utils/codePicker/country_code_picker.dart';
 
@@ -183,40 +182,55 @@ class QIBusSignInState extends State<QIBusSignIn> {
       ),
     );
   }
+
+
   final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
   void loginAndAuthenticateUser(BuildContext context) async{
+    final ProgressDialog pr =  ProgressDialog(context,type: ProgressDialogType.Normal, isDismissible: true, showLogs: true);
 
-    showDialog(
-        context: context,
-        barrierDismissible: true,
-        builder: (BuildContext context){
-          return ProgressDialog(message: "Authenticating, Please Wait ...",);
-        }
+
+
+    pr.style(
+        message: 'Logging In , Please Wait',
+        borderRadius: 10.0,
+        backgroundColor: Colors.white,
+        progressWidget: CircularProgressIndicator(),
+        elevation: 10.0,
+        insetAnimCurve: Curves.easeInOut,
+
+        progressTextStyle: TextStyle(
+            color: Colors.black, fontSize: 13.0, fontWeight: FontWeight.w400),
+        messageTextStyle: TextStyle(
+            color: Colors.black, fontSize: 19.0, fontWeight: FontWeight.w600)
     );
-
+    await pr.show();
     try {
       UserCredential userCredential = await FirebaseAuth.instance.signInWithEmailAndPassword(
           email: emailTextEditingController.text,
           password: passwordTextEditingController.text
       );
-      var hello;
+
       if (userCredential!=null){
-        retrievePreferenceFlag().then((s) {
+        retrievePreferenceFlag().then((s)async {
+
           if(s==0)
             {
+              await pr.hide();
+
               Navigator.pushAndRemoveUntil(  context,
                 MaterialPageRoute(builder: (BuildContext context) => FirstPreference()),
                 ModalRoute.withName('/'),);
               // Navigator.pushNamedAndRemoveUntil(context, HomeScreen.idScreen, (route) => false);
-              displayToastMessage("You have successfully logged-in", context);
+             // displayToastMessage("You have successfully logged-in", context);
             }
           else
             {
+              await pr.hide();
               Navigator.pushAndRemoveUntil(  context,
                 MaterialPageRoute(builder: (BuildContext context) => NavigatorPage()),
                 ModalRoute.withName('/'),);
               // Navigator.pushNamedAndRemoveUntil(context, HomeScreen.idScreen, (route) => false);
-              displayToastMessage("You have successfully logged-in", context);
+             // displayToastMessage("You have successfully logged-in", context);
             }
         }
         );
@@ -225,6 +239,7 @@ class QIBusSignInState extends State<QIBusSignIn> {
       }
       else
       {
+        await pr.hide();
         Navigator.of(context, rootNavigator: true).pop();
         _firebaseAuth.signOut();
         displayToastMessage("No record exists for this user. Please create new Account", context);

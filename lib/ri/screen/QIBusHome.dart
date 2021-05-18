@@ -88,8 +88,8 @@ class _QIBusHomeState extends State<QIBusHome> {
             onPressed: (){
               print("cleared");
               allDocIds.clear();
-              nestedRoutePreferences.clear();
-              currentUserPreference.clear();
+              // nestedRoutePreferences.clear();
+              // currentUserPreference.clear();
               sortedDocIds.clear();
               sortedMap.clear();
               toList.clear();
@@ -139,8 +139,8 @@ class _NavigatorPageState extends State<NavigatorPage> {
   TextStyle(fontSize: 30, fontWeight: FontWeight.bold);
     List<Widget> _widgetOptions = <Widget>[
       DisplaySearchedRoutes(),
-      QIBusHome(),
-     // DisplayAllRoutes(),
+     // QIBusHome(),
+      DisplayAllRoutes(),
       RouteUpload(),
 
   ];
@@ -152,22 +152,30 @@ class _NavigatorPageState extends State<NavigatorPage> {
   }
 
   doThis()async{
-     await retrieveAllDocIds();
-     await retrieveRoutePreferences();
-     await retrieveUserRoutePreference();
-     await getToList();
-     await getFromList();
-     await  getToFromList('Mysore');
-     await cosineDist();
-     await  sortDocIdsAfterCosine();
-     await getAllRoutesAccordingToPreference();
-     await printAllDetails();
+     // await retrieveAllDocIds();
+     // await retrieveRoutePreferences();
+     // await retrieveUserRoutePreference();
+     // await getToList();
+     // await getFromList();
+     // await  getToFromList('Mysore');
+     // await cosineDist();
+     // await  sortDocIdsAfterCosine();
+      await getAllRoutesAccordingToPreference();
+     // await printAllDetails();
 
   }
 @override
   void initState() {
     // TODO: implement initState
-
+  retrieveAllDocIds();
+  retrieveRoutePreferences();
+  retrieveUserRoutePreference();
+  getToList();
+  getFromList();
+  getToFromList('Mysore');
+  cosineDist();
+  sortDocIdsAfterCosine();
+  // doThis();
     super.initState();
 
 
@@ -178,8 +186,13 @@ class _NavigatorPageState extends State<NavigatorPage> {
       appBar: AppBar(
         actions: [
           ElevatedButton(onPressed: (){
-            clearAllData();
             signOut(context);
+            sortedDocIds.clear();
+            sortedMap.clear();
+            toList.clear();
+            fromList.clear();
+            toFromList.clear();
+            allRoutesAccordingToPreference.clear();
           }, child: Icon(Icons.power_settings_new_sharp))
         ],
         title: Center(child: const Text('Route It')),

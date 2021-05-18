@@ -9,7 +9,6 @@ import 'package:route_it_v2/ri/screen/HomePage.dart';
 import 'package:route_it_v2/ri/screen/QIBusHome.dart';
 import 'package:route_it_v2/ri/screen/QIBusSignIn.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:route_it_v2/ri/screen/progressDialog.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:clipboard/clipboard.dart';
 import 'package:image_picker/image_picker.dart';
