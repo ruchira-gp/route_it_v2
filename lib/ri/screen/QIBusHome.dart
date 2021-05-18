@@ -139,9 +139,10 @@ class _NavigatorPageState extends State<NavigatorPage> {
   TextStyle(fontSize: 30, fontWeight: FontWeight.bold);
     List<Widget> _widgetOptions = <Widget>[
       DisplaySearchedRoutes(),
+      HomePageRI(),
      // QIBusHome(),
       DisplayAllRoutes(),
-      RouteUpload(),
+
 
   ];
 
@@ -167,6 +168,15 @@ class _NavigatorPageState extends State<NavigatorPage> {
 @override
   void initState() {
     // TODO: implement initState
+  if(sortedMap!=null)
+  sortedMap.clear();
+  if(sortedDocIds!=null)// sorted map got after cosine function
+  sortedDocIds.clear();// List of all sorted Document IDs after cosine function
+  allDocIds.clear();
+   toList = []; // toCity List
+  fromList = []; // fromCity list
+   toFromList = []; // toCity list , given fromCity
+    allRoutesAccordingToPreference = [] ;
   retrieveAllDocIds();
   retrieveRoutePreferences();
   retrieveUserRoutePreference();
@@ -211,8 +221,8 @@ class _NavigatorPageState extends State<NavigatorPage> {
             label: 'Home',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.upload_rounded),
-            label: 'Upload Route',
+            icon: Icon(Icons.map_outlined),
+            label: 'Browse Routes',
           ),
         ],
         currentIndex: _selectedIndex,
