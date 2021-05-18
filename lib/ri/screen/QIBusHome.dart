@@ -193,6 +193,13 @@ class _NavigatorPageState extends State<NavigatorPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => RouteUpload()));
+        },
+        child: const Icon(Icons.upload_sharp),
+        backgroundColor: Colors.green,
+      ),
       appBar: AppBar(
         actions: [
           ElevatedButton(onPressed: (){
