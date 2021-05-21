@@ -43,7 +43,7 @@ class _DisplaySearchedRoutesState extends State<DisplaySearchedRoutes> {
   _buildList() {
     List<TripDetails> VD = [];
     allRoutesAccordingToPreference.forEach((element) {
-      VD.add(TripDetails(desc: element.desc,title: element.title,tripImage: element.tripImage,toCity: element.toCity,fromCity: element.fromCity,));
+      VD.add(TripDetails(desc: element.desc,title: element.title,tripImage: element.tripImage,toCity: element.toCity,fromCity: element.fromCity,expenses: element.expenses,mode:element.mode,link:element.link));
     });
 
     return VD;
@@ -52,7 +52,7 @@ class _DisplaySearchedRoutesState extends State<DisplaySearchedRoutes> {
   _buildSearchList() {
     List<TripDetails> VD = [];
     allRoutesAccordingToPreference.forEach((element) {
-      VD.add(TripDetails(desc: element.desc,title: element.title,tripImage: element.tripImage,toCity: element.toCity,fromCity: element.fromCity,));
+      VD.add(TripDetails(desc: element.desc,title: element.title,tripImage: element.tripImage,toCity: element.toCity,fromCity: element.fromCity,expenses: element.expenses,mode:element.mode,link:element.link));
     });
     if (_searchText.isEmpty) {
       return VD;
@@ -66,7 +66,7 @@ class _DisplaySearchedRoutesState extends State<DisplaySearchedRoutes> {
             .toString()
             .toLowerCase()
             .contains(_searchText.toLowerCase()))
-          _searchList.add(TripDetails(desc: element.desc,title: element.title,tripImage: element.tripImage,toCity: element.toCity,fromCity: element.fromCity,));
+          _searchList.add(TripDetails(desc: element.desc,title: element.title,tripImage: element.tripImage,toCity: element.toCity,fromCity: element.fromCity,expenses: element.expenses,mode:element.mode,link:element.link));
       });
       setState(() {
         B = _searchList;
@@ -101,7 +101,7 @@ class _DisplaySearchedRoutesState extends State<DisplaySearchedRoutes> {
     return AppBar(
         centerTitle: true,
         title: appBarTitle,
-        backgroundColor: Colors.green,
+        backgroundColor: Colors.blue,
         actions: <Widget>[
           IconButton(
             icon: actionIcon,

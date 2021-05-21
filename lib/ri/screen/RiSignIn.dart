@@ -1,16 +1,11 @@
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-
 import 'package:route_it_v2/ri/screen/FirstPreferencePage.dart';
 import 'package:route_it_v2/ri/screen/RiHome.dart';
-
 import 'package:route_it_v2/ri/screen/registrationScreen.dart';
-
 import 'package:route_it_v2/ri/utils/RiColors.dart';
 import 'package:route_it_v2/ri/utils/RiConstant.dart';
 import 'package:route_it_v2/ri/utils/RiExtensions.dart';
-
 import 'package:route_it_v2/ri/utils/RiStrings.dart';
 import 'package:route_it_v2/ri/utils/RiWidget.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -44,18 +39,16 @@ class QIBusSignInState extends State<QIBusSignIn> {
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
-              text(QIBus_text_welcome_to,
-                  textColor: qIBus_textChild,
-                  fontFamily: fontBold,
-                  fontSize: textSizeLarge),
-              text(QIBus_text_qibus,
-                  textColor: qIBus_colorPrimary,
-                  fontFamily: fontBold,
-                  fontSize: textSizeXLarge),
+              // Center(
+              //   child: text(QIBus_text_welcome_to,
+              //       textColor: Colors.blue[500],
+              //       fontFamily: fontBold,
+              //       fontSize: textSizeLarge),
+              // ),
               Center(
                   child: Image.asset(
                 'images/ri/app_logo.png',
-                scale: 5,
+                scale: 4,
               )),
               // CachedNetworkImage(
               //   imageUrl: qibus_ic_travel,
@@ -71,7 +64,7 @@ class QIBusSignInState extends State<QIBusSignIn> {
                       showShadow: false,
                       bgColor: qIBus_white,
                       radius: 8,
-                      color: qIBus_colorPrimary),
+                      color: Colors.blue[500]),
                   padding: EdgeInsets.all(0),
                   child: Row(
                     children: <Widget>[
@@ -104,7 +97,7 @@ class QIBusSignInState extends State<QIBusSignIn> {
                       showShadow: false,
                       bgColor: qIBus_white,
                       radius: 8,
-                      color: qIBus_colorPrimary),
+                      color: Colors.blue[500]),
                   padding: EdgeInsets.all(0),
                   child: Row(
                     children: <Widget>[

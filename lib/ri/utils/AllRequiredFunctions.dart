@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -71,7 +73,8 @@ class TripDetails extends StatelessWidget {
                           child: Stack(
                             children: <Widget>[
                               Container(
-                                color:Colors.green,
+                                color:Colors.white,
+                                // child: Image.network(tripImage) ,
                                 child: CachedNetworkImage(
                                   imageUrl: tripImage,
                                   height: width * 0.3,
@@ -163,7 +166,7 @@ class TripDetails extends StatelessWidget {
                 child: Stack(
                   children: <Widget>[
                     Container(
-                      color:Colors.green,
+                      color:Colors.white,
                       child: CachedNetworkImage(
                         imageUrl: tripImage,
                         height: width * 0.3,
@@ -334,6 +337,7 @@ retrieveUserRoutePreference() {
 //----------------------------------------------------------------------------------------------
 // Retrieves Cosine Sorted  as Map  and stores it in sortedMap
 cosineDist() async {
+  print('doc ids >>>>> $allDocIds>');
   List nestedRoutePreferences = []; // List of List of route prefs
   List currentUserPreference = [];
   var firebaseUser = FirebaseAuth.instance.currentUser;
@@ -359,6 +363,7 @@ cosineDist() async {
     currentUserPreference.add(e);
     currentUserPreference.add(f);
   });
+  print('2)currentUserPreference = $currentUserPreference');
   //final firestoreInstance = FirebaseFirestore.instance;
   await firestoreInstance.collection('trip').get().then((querySnapshot) {
     querySnapshot.docs.forEach((result) {
@@ -382,12 +387,11 @@ cosineDist() async {
       nestedRoutePreferences.add(X);
     });
   });
+  print('3) nestedRoutePrefs >>>>>$nestedRoutePreferences');
 
-  print('nestedRoutePrefernces == $nestedRoutePreferences');
   List<dynamic> routeRating = []..addAll(nestedRoutePreferences);
-
   //List routeRating = nestedRoutePreferences;
-  print('route Rating = $routeRating');
+  print('4) route Rating = $routeRating');
   List<double> cosineValues = [];
   routeRating.forEach((element) {
     var temp = element;
@@ -402,6 +406,7 @@ cosineDist() async {
     double x = 1 - cosineDistance(tempDouble, userPreferenceDouble);
     cosineValues.add(x);
   });
+  print('5) cosinevalues>>>>>>> $cosineValues');
   //var temp = routeRating[i];
 
   print("hello im cosineDist function");
@@ -417,11 +422,10 @@ cosineDist() async {
   sortedMap.forEach((key, value) {
     sortedDocIds.add(key);
   });
-  print('Sorted DOc ids : $sortedDocIds');
+  print('6) Sorted DOc ids >>>>>> : $sortedDocIds');
   List<String> sortedDocIds2 = []..addAll(sortedDocIds);
-  print('Sorted DOc ids2222 : $sortedDocIds');
+  print('7) Sorted DOc ids2>>>>>>>> : $sortedDocIds2');
 
-  //-------------------
   List<TripDetails> allRoutesAccordingToPreference2 = [];
   String desc = "";
   String title = "";
@@ -431,31 +435,69 @@ cosineDist() async {
   String link="";
   String expenses="";
   String mode="";
-  sortedDocIds2.forEach((element) async {
-    await firestoreInstance.collection("trip").doc(element).get().then((value) {
-      desc = (value.data()["info"]['desc']);
-      title = (value.data()["info"]['title']);
-      tripImage = (value.data()["info"]['photo']);
-      toCity = (value.data()['route']["route_info"]['to']);
-      fromCity = (value.data()['route']["route_info"]['from']);
-      link=(value.data()['route']["route_info"]['link']);
-      expenses=(value.data()['misc']["expenses"]);
-      mode=(value.data()['misc']["mode"]);
-      allRoutesAccordingToPreference.add(TripDetails(
-        desc: desc,
-        title: title,
-        tripImage: tripImage,
-        toCity: toCity,
-        fromCity: fromCity,
-        link: link,
-        expenses: expenses,
-        mode: mode,
-      ));
-    });
-    print('title : $title');
-    //allRoutesAccordingToPreference2.add(TripDetails(desc: desc,title: title,tripImage: tripImage,toCity: toCity,fromCity: fromCity,));
-  });
-  allRoutesAccordingToPreference = []..addAll(allRoutesAccordingToPreference2);
+  int o=0;
+while(o<sortedDocIds2.length){
+  await firestoreInstance.collection("trip").doc(sortedDocIds2[o]).get().then((value) {
+    //print("doc id inside loop : ${sortedDocIds2[o]}");
+    desc = (value.data()["info"]['desc']);
+    title = (value.data()["info"]['title']);
+    tripImage = (value.data()["info"]['photo']);
+    toCity = (value.data()['route']["route_info"]['to']);
+    fromCity = (value.data()['route']["route_info"]['from']);
+    link=(value.data()['route']["route_info"]['link']);
+    expenses=(value.data()['misc']["expenses"]);
+    mode=(value.data()['misc']["mode"]);
+      });
+    allRoutesAccordingToPreference.add(TripDetails(
+    desc: desc,
+    title: title,
+    tripImage: tripImage,
+    toCity: toCity,
+    fromCity: fromCity,
+    link: link,
+    expenses: expenses,
+    mode: mode,
+  ));
+  print(sortedDocIds2[o]);
+  o++;
+      }
+      print(allRoutesAccordingToPreference);
+  // sortedDocIds2.forEach((element)  {
+  //    firestoreInstance.collection("trip").doc(element).get().then((value) {
+  //     print("doc id inside loop : $element");
+  //     desc = (value.data()["info"]['desc']);
+  //     title = (value.data()["info"]['title']);
+  //     tripImage = (value.data()["info"]['photo']);
+  //     toCity = (value.data()['route']["route_info"]['to']);
+  //     fromCity = (value.data()['route']["route_info"]['from']);
+  //     link=(value.data()['route']["route_info"]['link']);
+  //     expenses=(value.data()['misc']["expenses"]);
+  //     mode=(value.data()['misc']["mode"]);
+  //     TripDetails x=TripDetails(desc: desc,
+  //       title: title,
+  //       tripImage: tripImage,
+  //       toCity: toCity,
+  //       fromCity: fromCity,
+  //       link: link,
+  //       expenses: expenses,
+  //       mode: mode);
+  //     allRoutesAccordingToPreference.add(x);
+  //
+  //     //  allRoutesAccordingToPreference.add(TripDetails(
+  //     //   desc: desc,
+  //     //   title: title,
+  //     //   tripImage: tripImage,
+  //     //   toCity: toCity,
+  //     //   fromCity: fromCity,
+  //     //   link: link,
+  //     //   expenses: expenses,
+  //     //   mode: mode,
+  //     // ));
+  //   });
+  //   print('title : $title');
+  //   //allRoutesAccordingToPreference2.add(TripDetails(desc: desc,title: title,tripImage: tripImage,toCity: toCity,fromCity: fromCity,));
+  // });
+  //allRoutesAccordingToPreference = []..addAll(allRoutesAccordingToPreference2);
 
   print(
       "allroutes according yo preference22 : $allRoutesAccordingToPreference2");
@@ -546,9 +588,8 @@ getToFromList(String fromCity) async {
 //--------------------------------------------------------------------------------------------------------
 // Converts the route details into object of type TripDetails and stores it in allRoutesAccordingToPreference
 
-getAllRoutesAccordingToPreference() async {
+getAllRoutesAccordingToPreference()  {
   print('Sorted DOc ids 222222: $sortedDocIds');
-
   final firestoreInstance = FirebaseFirestore.instance;
   String desc = "";
   String title = "";
@@ -558,8 +599,8 @@ getAllRoutesAccordingToPreference() async {
   String link="";
   String expenses="";
   String mode="";
-  sortedDocIds.forEach((element) async {
-    await firestoreInstance.collection("trip").doc(element).get().then((value) {
+   sortedDocIds.forEach((element)  {
+     firestoreInstance.collection("trip").doc(element).get().then((value) {
       desc = (value.data()["info"]['desc']);
       title = (value.data()["info"]['title']);
       tripImage = (value.data()["info"]['photo']);
@@ -568,7 +609,7 @@ getAllRoutesAccordingToPreference() async {
       link = (value.data()['route']["route_info"]['link']);
       expenses=(value.data()['misc']["expenses"]);
       mode=(value.data()['misc']["mode"]);
-      allRoutesAccordingToPreference.add(TripDetails(
+       allRoutesAccordingToPreference.add(TripDetails(
         desc: desc,
         title: title,
         tripImage: tripImage,

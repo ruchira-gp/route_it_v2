@@ -159,6 +159,7 @@ class _RouteUploadState extends State<RouteUpload> {
     });
   }
 
+
   List modes = ['Motorcycle', 'Car', 'Bus', 'Train'];
   double i = 1;
   int _value = 1;
@@ -178,6 +179,7 @@ class _RouteUploadState extends State<RouteUpload> {
         travelMonthTextEditingController.text = formatted;
       });
   }
+
 
   @override
   Widget build(BuildContext context) {
@@ -297,11 +299,7 @@ class _RouteUploadState extends State<RouteUpload> {
                                 setState(() {
                                   _value = value;
                                   modeTextEditingController.text = modes[value];
-                                  if(modeTextEditingController.text==null){
-                                    setState(() {
-                                      modeTextEditingController.text='Car';
-                                    });
-                                  }
+
                                 });
                               },
                             ),
@@ -381,7 +379,7 @@ class _RouteUploadState extends State<RouteUpload> {
                       enableInteractiveSelection: true,
                       keyboardType: TextInputType.text,
                       decoration: InputDecoration(
-                        labelText: "Link",
+                        labelText: "Google Maps Link",
                         labelStyle: TextStyle(
                           fontSize: 14.0,
                         ),
@@ -395,8 +393,8 @@ class _RouteUploadState extends State<RouteUpload> {
                     Row(
                       children: [
                         buildPaste(),
-                        SizedBox(width: 20,),
-                        Text('<- Click to Paste Link Above'),
+                        SizedBox(width: 10,),
+                        Text('<- Click to Paste Maps Link'),
                       ],
                     ),
                     ElevatedButton(
@@ -644,6 +642,11 @@ class _RouteUploadState extends State<RouteUpload> {
 
 
                         } else {
+                          if(modeTextEditingController.text==""){
+                            setState(() {
+                              modeTextEditingController.text='Car';
+                            });
+                          }
 
                           uploadImageAndRoute();
 

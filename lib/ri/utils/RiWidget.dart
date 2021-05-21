@@ -91,7 +91,7 @@ class QIBusAppButtonState extends State<QIBusAppButton> {
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.0)),
         padding: const EdgeInsets.all(0.0),
         child: Container(
-          decoration: const BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(8.0)), color: qIBus_colorPrimary),
+          decoration: const BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(8.0)), color: Colors.lightBlueAccent),
           child: Center(
             child: Padding(
               padding: const EdgeInsets.all(16.0),
@@ -101,8 +101,8 @@ class QIBusAppButtonState extends State<QIBusAppButton> {
                 textAlign: TextAlign.center,
               ),
             ),
-          ),
-        ));
+          ),)
+        );
   }
 
   @override

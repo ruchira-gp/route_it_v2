@@ -112,7 +112,6 @@ class _HomePageRIState extends State<HomePageRI> {
                       ),
                     ),
                   ),
-
                 ],
               ),
             )).toList(),

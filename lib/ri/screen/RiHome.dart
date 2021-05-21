@@ -167,8 +167,8 @@ class _NavigatorPageState extends State<NavigatorPage> {
    toFromList = []; // toCity list , given fromCity
     allRoutesAccordingToPreference = [] ;
   retrieveAllDocIds();
-  retrieveRoutePreferences();
-  retrieveUserRoutePreference();
+  //retrieveRoutePreferences();
+  //retrieveUserRoutePreference();
   getToList();
   getFromList();
   getToFromList('Mysore');
@@ -258,7 +258,7 @@ class _NavigatorPageState extends State<NavigatorPage> {
         child: _widgetOptions.elementAt(_selectedIndex),
       ),
       bottomNavigationBar: BottomNavigationBar(
-        backgroundColor: Colors.blue[800],
+        backgroundColor: Colors.blue[600],
         items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(
             icon: Icon(Icons.search),
