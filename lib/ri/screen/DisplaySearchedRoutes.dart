@@ -62,6 +62,9 @@ class _DisplaySearchedRoutesState extends State<DisplaySearchedRoutes> {
         if (element.toCity
             .toString()
             .toLowerCase()
+            .contains(_searchText.toLowerCase()) ||element.fromCity
+            .toString()
+            .toLowerCase()
             .contains(_searchText.toLowerCase()))
           _searchList.add(TripDetails(desc: element.desc,title: element.title,tripImage: element.tripImage,toCity: element.toCity,fromCity: element.fromCity,));
       });
@@ -84,9 +87,9 @@ class _DisplaySearchedRoutesState extends State<DisplaySearchedRoutes> {
       backgroundColor: Colors.white70,
       key: key,
       appBar: buildBar(context),
-      body: GridView(
-        gridDelegate:
-        SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2),
+      body: ListView(
+        // gridDelegate:
+        // SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2),
         padding: EdgeInsets.symmetric(vertical: 8.0),
         children: _IsSearching ? _buildSearchList() : _buildList(),
       ),
@@ -126,6 +129,7 @@ class _DisplaySearchedRoutesState extends State<DisplaySearchedRoutes> {
               });
             },
           ),
+
         ]);
   }
 

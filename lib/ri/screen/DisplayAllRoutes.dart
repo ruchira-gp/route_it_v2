@@ -19,9 +19,9 @@ class _DisplayAllRoutesState extends State<DisplayAllRoutes> {
       return Scaffold(
         key: key,
         backgroundColor: Colors.white70,
-        body: GridView(
-          gridDelegate:
-          SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2),
+        body: ListView(
+          // gridDelegate:
+          // SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2),
           padding: EdgeInsets.symmetric(vertical: 8.0),
           children: allRoutesAccordingToPreference,
         ),

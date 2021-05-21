@@ -4,23 +4,31 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:document_analysis/document_analysis.dart';
 import 'dart:collection';
 import 'package:route_it_v2/ri/screen/QIBusSignIn.dart';
-
-
-
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
+import 'package:route_it_v2/ri/model/QiBusModel.dart';
+import 'package:route_it_v2/ri/utils/QiBusColors.dart';
+import 'package:route_it_v2/ri/utils/QiBusConstant.dart';
+import 'package:route_it_v2/ri/utils/QiBusDataGenerator.dart';
+import 'package:route_it_v2/ri/utils/QiBusImages.dart';
+import 'package:route_it_v2/ri/utils/QiBusStrings.dart';
+import 'package:route_it_v2/ri/utils/QiBusWidget.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 List<String> allDocIds = []; // List of all Document ID
 // List nestedRoutePreferences = []; // List of List of route prefs
 // List currentUserPreference = []; // Current user pref
 LinkedHashMap sortedMap; // sorted map got after cosine function
-List<String> sortedDocIds = [];// List of all sorted Document IDs after cosine function
+List<String> sortedDocIds =
+    []; // List of all sorted Document IDs after cosine function
 var toList = []; // toCity List
 var fromList = []; // fromCity list
 var toFromList = []; // toCity list , given fromCity
-List<TripDetails> allRoutesAccordingToPreference = [] ; // List of all routes
+List<TripDetails> allRoutesAccordingToPreference = []; // List of all routes
 
-
-
-
+void launchURL(url) async =>
+    await canLaunch(url) ? await launch(url) : throw 'Could not launch $url';
 class TripDetails extends StatelessWidget {
   final String desc;
   final String title;
@@ -32,22 +40,23 @@ class TripDetails extends StatelessWidget {
   final String mode;
   // ignore: non_constant_identifier_names
   final String travel_month;
+  final String link;
 
-  TripDetails({
-    this.fromCity,
-    this.desc,
-    this.title,
-    this.toCity,
-    this.tripImage,
-    this.duration,
-    this.expenses,
-    this.mode,
-    // ignore: non_constant_identifier_names
-    this.travel_month
-
-  } );
+  TripDetails(
+      {this.fromCity,
+      this.desc,
+      this.title,
+      this.toCity,
+      this.tripImage,
+      this.duration,
+      this.expenses,
+      this.mode,
+        this.link,
+      // ignore: non_constant_identifier_names
+      this.travel_month});
   @override
   Widget build(BuildContext context) {
+    var width = MediaQuery.of(context).size.width;
     return GestureDetector(
       onTap: () {
         showDialog(
@@ -57,30 +66,72 @@ class TripDetails extends StatelessWidget {
                 title: Center(child: Text('Trip Details')),
                 content: Container(
                   child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      Stack(
-                        children: [
-                          CircleAvatar(
-                            backgroundImage: AssetImage('images/ri/qibus_ic_home_selected.png'),
-                            backgroundColor: Colors.transparent,
-                            radius: 45,
+                      ClipRRect(
+                          borderRadius: BorderRadius.only(
+                            topRight: Radius.circular(spacing_middle),
+                            topLeft: Radius.circular(spacing_middle),
                           ),
-                          CircleAvatar(
-                            backgroundImage:NetworkImage(tripImage),
-                            backgroundColor: Colors.transparent,
-                            radius: 45,
-                            //backgroundImage: ImageProvider(AssetImage('images/DANKJI.png')),
-                          ),
-                        ],
+                          child: Stack(
+                            children: <Widget>[
+                              Container(
+                                color:Colors.green,
+                                child: CachedNetworkImage(
+                                  imageUrl: tripImage,
+                                  height: width * 0.3,
+                                  fit: BoxFit.none,
+                                  width: width,
+                                ),
+                              )
+                            ],
+                          )),
+                      SizedBox(
+                        height: 20,
                       ),
-                      Text('Title',style: TextStyle(color: Colors.green,),textAlign: TextAlign.left,),
-                      Text(title,style: TextStyle(fontSize: 30,fontWeight: FontWeight.w900,fontStyle:FontStyle.normal),),
-                      SizedBox(height: 15,),
-                      Text('Desc',style: TextStyle(color: Colors.green,),textAlign: TextAlign.left,),
-                      Text(desc,style: TextStyle(fontSize: 30,fontWeight: FontWeight.w900,fontStyle:FontStyle.normal),),
+                      Text(
+                        title,
+                        style: TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.w600,
+                            fontStyle: FontStyle.normal),
+                      ),
+                      SizedBox(
+                        height: 15,
+                      ),
 
+                      Text(
+                        desc,
+                        style: TextStyle(
+                            fontSize: 15,
+                            fontWeight: FontWeight.w600,
+                            fontStyle: FontStyle.normal),
+                      ),
+                      SizedBox(
+                        height: 15,
+                      ),
 
+                      text("From : $fromCity", textAllCaps: true, fontFamily: fontMedium),
+                      SizedBox(
+                        height: 15,
+                      ),
+                      text("To : $toCity", textAllCaps: true, fontFamily: fontMedium),
+                      SizedBox(
+                        height: 15,
+                      ),
 
+                      text("Expenses : $expenses", textAllCaps: true, fontFamily: fontMedium),
+                      SizedBox(
+                        height: 15,
+                      ),
+                      text("Mode of Travel : $mode", textAllCaps: true, fontFamily: fontMedium),
+                      SizedBox(
+                        height: 15,
+                      ),
+                      ElevatedButton(onPressed: ()async{
+                        await launch(link);
+                       // launchURL(link);
+                      }, child: Text('Guide Me !'))
                     ],
                   ),
                 ),
@@ -94,65 +145,120 @@ class TripDetails extends StatelessWidget {
                       },
                     ),
                   ),
-
-
                 ],
               );
             });
-
       },
-      child: Card(
-          color: Colors.white,
-          child: Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                Row(
-                  children: [
-                    Stack(
-                      children: [
 
-                        CircleAvatar(
-                          backgroundImage:NetworkImage(tripImage,scale: 5),
-                          backgroundColor: Colors.transparent,
-                          radius: 25,
-                          //backgroundImage: ImageProvider(AssetImage('images/DANKJI.png')),
-                        ),
-                      ],
-                    ),
-                    SizedBox(
-                      width: 20,
-                    ),
-                    Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Text('to'),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Text('$toCity'),
-                        ),
-                      ],
+      child:Container(
+        width: width * 0.7,
+        margin: EdgeInsets.only(
+            left: spacing_standard_new,
+            right: spacing_standard_new,
+            bottom: spacing_standard_new),
+        decoration: boxDecoration(
+            showShadow: true, bgColor: qIBus_white, radius: spacing_middle),
+        child: Column(
+          children: <Widget>[
+            ClipRRect(
+                borderRadius: BorderRadius.only(
+                  topRight: Radius.circular(spacing_middle),
+                  topLeft: Radius.circular(spacing_middle),
+                ),
+                child: Stack(
+                  children: <Widget>[
+                    Container(
+                      color:Colors.green,
+                      child: CachedNetworkImage(
+                        imageUrl: tripImage,
+                        height: width * 0.3,
+                        fit: BoxFit.none,
+                        width: width,
+                      ),
                     )
                   ],
+                )),
+            SizedBox(
+              height: 8,
+            ),
+            Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    SizedBox(
+                      width: spacing_control_half,
+                    ),
+                    text(title, textAllCaps: true, fontFamily: fontMedium),
+                  ],
                 ),
-                Text(
-                  '$title',
-                  style: TextStyle(fontWeight: FontWeight.bold),
-                ),
-
-                Text(
-                  'from: $fromCity',
-                  style: TextStyle(color: Colors.green),
-                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    text("From : $fromCity", textAllCaps: true, fontFamily: fontMedium),
+                    text("To : $toCity", textAllCaps: true, fontFamily: fontMedium),
+                  ],
+                )
 
               ],
             ),
-          )),
+            SizedBox(
+              height: 8,
+            ),
+          ],
+        ),
+      )
+      // child: Card(
+      //     color: Colors.white,
+      //     child: Padding(
+      //       padding: const EdgeInsets.all(20.0),
+      //       child: Column(
+      //         crossAxisAlignment: CrossAxisAlignment.start,
+      //         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      //         children: [
+      //           Row(
+      //             children: [
+      //               Container(
+      //                 height: 120.0,
+      //                 width: 120.0,
+      //                 decoration: BoxDecoration(
+      //                   image: DecorationImage(
+      //                     image: NetworkImage(tripImage, scale: 5),
+      //                     fit: BoxFit.fill,
+      //                   ),
+      //                   shape: BoxShape.rectangle,
+      //                 ),
+      //               ),
+      //               SizedBox(
+      //                 width: 20,
+      //               ),
+      //               Column(
+      //                 mainAxisAlignment: MainAxisAlignment.center,
+      //                 children: [
+      //                   Text(
+      //                     '$title',
+      //                     style: TextStyle(fontWeight: FontWeight.bold),
+      //                   ),
+      //                   Text(
+      //                     'from: $fromCity',
+      //                     style: TextStyle(color: Colors.green),
+      //                   ),
+      //                   Padding(
+      //                     padding: const EdgeInsets.all(8.0),
+      //                     child: Text('to : $toCity'),
+      //                   ),
+      //
+      //                 ],
+      //               )
+      //             ],
+      //           ),
+      //         ],
+      //       ),
+      //     )),
     );
   }
 }
@@ -232,13 +338,13 @@ retrieveUserRoutePreference() {
 
 //----------------------------------------------------------------------------------------------
 // Retrieves Cosine Sorted  as Map  and stores it in sortedMap
-cosineDist() async{
+cosineDist() async {
   List nestedRoutePreferences = []; // List of List of route prefs
   List currentUserPreference = [];
   var firebaseUser = FirebaseAuth.instance.currentUser;
   final firestoreInstance = FirebaseFirestore.instance;
 
- await firestoreInstance
+  await firestoreInstance
       .collection("users")
       .doc(firebaseUser.uid)
       .get()
@@ -259,7 +365,7 @@ cosineDist() async{
     currentUserPreference.add(f);
   });
   //final firestoreInstance = FirebaseFirestore.instance;
- await firestoreInstance.collection('trip').get().then((querySnapshot) {
+  await firestoreInstance.collection('trip').get().then((querySnapshot) {
     querySnapshot.docs.forEach((result) {
       List X = [];
       X.clear();
@@ -289,19 +395,19 @@ cosineDist() async{
   print('route Rating = $routeRating');
   List<double> cosineValues = [];
   routeRating.forEach((element) {
-    var temp=element;
+    var temp = element;
     var tempDouble =
-    temp.map((i) => int.parse(i.toString()).toDouble()).toList();
+        temp.map((i) => int.parse(i.toString()).toDouble()).toList();
     tempDouble = tempDouble.cast<double>();
     print('tempDouble = $tempDouble');
-    var userPreferenceDouble =
-    currentUserPreference.map((i) => int.parse(i.toString()).toDouble()).toList();
+    var userPreferenceDouble = currentUserPreference
+        .map((i) => int.parse(i.toString()).toDouble())
+        .toList();
     print('userprefernceDouble : $userPreferenceDouble');
     double x = 1 - cosineDistance(tempDouble, userPreferenceDouble);
     cosineValues.add(x);
   });
-    //var temp = routeRating[i];
-
+  //var temp = routeRating[i];
 
   print("hello im cosineDist function");
   var finalList = new Map();
@@ -321,41 +427,53 @@ cosineDist() async{
   print('Sorted DOc ids2222 : $sortedDocIds');
 
   //-------------------
-  List<TripDetails> allRoutesAccordingToPreference2 = [] ;
-  String desc="";
-  String title="";
-  String tripImage="";
-  String toCity="";
-  String fromCity="";
-  sortedDocIds2.forEach((element) async{
-    await firestoreInstance.collection("trip").doc(element).get().then((value){
-      desc=(value.data()["info"]['desc']);
-      title=(value.data()["info"]['title']);
-      tripImage=(value.data()["info"]['photo']);
-      toCity=(value.data()['route']["route_info"]['to']);
-      fromCity=(value.data()['route']["route_info"]['from']);
-       allRoutesAccordingToPreference.add(TripDetails(desc: desc,title: title,tripImage: tripImage,toCity: toCity,fromCity: fromCity,));
-
+  List<TripDetails> allRoutesAccordingToPreference2 = [];
+  String desc = "";
+  String title = "";
+  String tripImage = "";
+  String toCity = "";
+  String fromCity = "";
+  String link="";
+  String expenses="";
+  String mode="";
+  sortedDocIds2.forEach((element) async {
+    await firestoreInstance.collection("trip").doc(element).get().then((value) {
+      desc = (value.data()["info"]['desc']);
+      title = (value.data()["info"]['title']);
+      tripImage = (value.data()["info"]['photo']);
+      toCity = (value.data()['route']["route_info"]['to']);
+      fromCity = (value.data()['route']["route_info"]['from']);
+      link=(value.data()['route']["route_info"]['link']);
+      expenses=(value.data()['misc']["expenses"]);
+      mode=(value.data()['misc']["mode"]);
+      allRoutesAccordingToPreference.add(TripDetails(
+        desc: desc,
+        title: title,
+        tripImage: tripImage,
+        toCity: toCity,
+        fromCity: fromCity,
+        link: link,
+        expenses: expenses,
+        mode: mode,
+      ));
     });
-     print('title : $title');
-     //allRoutesAccordingToPreference2.add(TripDetails(desc: desc,title: title,tripImage: tripImage,toCity: toCity,fromCity: fromCity,));
+    print('title : $title');
+    //allRoutesAccordingToPreference2.add(TripDetails(desc: desc,title: title,tripImage: tripImage,toCity: toCity,fromCity: fromCity,));
   });
   allRoutesAccordingToPreference = []..addAll(allRoutesAccordingToPreference2);
 
-  print("allroutes according yo preference22 : $allRoutesAccordingToPreference2");
+  print(
+      "allroutes according yo preference22 : $allRoutesAccordingToPreference2");
   print("allroutes according yo preference : $allRoutesAccordingToPreference");
 }
 
-
 //----------------------------------------------------------------------------------------------
 
-
 //Sorting docids in sortMap and storing it in sortedDocIds
-sortDocIdsAfterCosine(){
+sortDocIdsAfterCosine() {
   // sortedMap.forEach((key, value) {
   //   sortedDocIds.add(key);
   // });
-
 }
 
 //----------------------------------------------------------------------------------------------
@@ -363,34 +481,34 @@ sortDocIdsAfterCosine(){
 // if returns 0 : new user
 // if returns 1 : existing user
 
-retrievePreferenceFlag()async{
-  var firebaseUser =  FirebaseAuth.instance.currentUser;
+retrievePreferenceFlag() async {
+  var firebaseUser = FirebaseAuth.instance.currentUser;
   final firestoreInstance = FirebaseFirestore.instance;
   int a;
-  await firestoreInstance.collection("users").doc(firebaseUser.uid).get().then((value){
-    a=(value.data()["pref_flag"]);
+  await firestoreInstance
+      .collection("users")
+      .doc(firebaseUser.uid)
+      .get()
+      .then((value) {
+    a = (value.data()["pref_flag"]);
   });
   //print(a);
   return a;
 }
 
-
 //----------------------------------------------------------------------------------------------
 
-
-
 //Signing out user into Login Page
-signOut(context)async{
-      await FirebaseAuth.instance.signOut();
-    Navigator.pushAndRemoveUntil(
-      context,
-      MaterialPageRoute(
-        builder: (BuildContext context) => QIBusSignIn(),
-      ),
-      (route) => false,
-    );
+signOut(context) async {
+  await FirebaseAuth.instance.signOut();
+  Navigator.pushAndRemoveUntil(
+    context,
+    MaterialPageRoute(
+      builder: (BuildContext context) => QIBusSignIn(),
+    ),
+    (route) => false,
+  );
 }
-
 
 //----------------------------------------------------------------------------------------------
 
@@ -423,7 +541,7 @@ getToFromList(String fromCity) async {
   final firestoreInstance = FirebaseFirestore.instance;
   firestoreInstance.collection("trip").get().then((querySnapshot) {
     querySnapshot.docs.forEach((result) {
-      if(fromCity==result.data()['route']['route_info']['from']){
+      if (fromCity == result.data()['route']['route_info']['from']) {
         toFromList.add(result.data()['route']['route_info']['to']);
       }
     });
@@ -433,33 +551,45 @@ getToFromList(String fromCity) async {
 //--------------------------------------------------------------------------------------------------------
 // Converts the route details into object of type TripDetails and stores it in allRoutesAccordingToPreference
 
-getAllRoutesAccordingToPreference()async{
+getAllRoutesAccordingToPreference() async {
   print('Sorted DOc ids 222222: $sortedDocIds');
 
   final firestoreInstance = FirebaseFirestore.instance;
-  String desc="";
-  String title="";
-  String tripImage="";
-  String toCity="";
-  String fromCity="";
-  sortedDocIds.forEach((element) async{
-    await firestoreInstance.collection("trip").doc(element).get().then((value){
-      desc=(value.data()["info"]['desc']);
-      title=(value.data()["info"]['title']);
-      tripImage=(value.data()["info"]['photo']);
-      toCity=(value.data()['route']["route_info"]['to']);
-      fromCity=(value.data()['route']["route_info"]['from']);
-      allRoutesAccordingToPreference.add(TripDetails(desc: desc,title: title,tripImage: tripImage,toCity: toCity,fromCity: fromCity,));
-
+  String desc = "";
+  String title = "";
+  String tripImage = "";
+  String toCity = "";
+  String fromCity = "";
+  String link="";
+  String expenses="";
+  String mode="";
+  sortedDocIds.forEach((element) async {
+    await firestoreInstance.collection("trip").doc(element).get().then((value) {
+      desc = (value.data()["info"]['desc']);
+      title = (value.data()["info"]['title']);
+      tripImage = (value.data()["info"]['photo']);
+      toCity = (value.data()['route']["route_info"]['to']);
+      fromCity = (value.data()['route']["route_info"]['from']);
+      link = (value.data()['route']["route_info"]['link']);
+      expenses=(value.data()['misc']["expenses"]);
+      mode=(value.data()['misc']["mode"]);
+      allRoutesAccordingToPreference.add(TripDetails(
+        desc: desc,
+        title: title,
+        tripImage: tripImage,
+        toCity: toCity,
+        fromCity: fromCity,
+        link: link,
+        mode: mode,
+        expenses: expenses,
+      ));
     });
   });
 
   print("allroutes according yo preference : $allRoutesAccordingToPreference");
 }
 
-
 //----------------------------------------------------------------------------------------------
-
 
 printAllDetails() {
   print('###### Below : currentUserPreference ######');
@@ -480,12 +610,9 @@ printAllDetails() {
   print(toFromList);
   print('TD list allRoutesAccordingToPreference');
   print(allRoutesAccordingToPreference);
-
-
 }
 
-
-clearAllData(){
+clearAllData() {
   print("cleared");
   allDocIds.clear();
   // nestedRoutePreferences.clear();

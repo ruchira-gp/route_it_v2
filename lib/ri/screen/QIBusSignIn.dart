@@ -1,28 +1,22 @@
-import 'package:cached_network_image/cached_network_image.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_database/firebase_database.dart';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
+
 import 'package:route_it_v2/ri/screen/FirstPreferencePage.dart';
 import 'package:route_it_v2/ri/screen/QIBusHome.dart';
-import 'package:route_it_v2/ri/screen/preferenceSelection.dart';
+
 import 'package:route_it_v2/ri/screen/registrationScreen.dart';
-import 'package:route_it_v2/ri/screen/DisplayAllRoutes.dart';
+
 import 'package:route_it_v2/ri/utils/QiBusColors.dart';
 import 'package:route_it_v2/ri/utils/QiBusConstant.dart';
 import 'package:route_it_v2/ri/utils/QiBusExtension.dart';
-import 'package:route_it_v2/ri/utils/QiBusImages.dart';
+
 import 'package:route_it_v2/ri/utils/QiBusStrings.dart';
 import 'package:route_it_v2/ri/utils/QiBusWidget.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:progress_dialog/progress_dialog.dart';
 import 'package:route_it_v2/ri/utils/AllRequiredFunctions.dart';
-import 'package:route_it_v2/ri/utils/codePicker/country_code_picker.dart';
 
-import '../../main.dart';
-import 'HomePage.dart';
-import 'QIBusVerification.dart';
 
 class QIBusSignIn extends StatefulWidget {
   static String tag = '/QIBusSignIn';
@@ -183,12 +177,9 @@ class QIBusSignInState extends State<QIBusSignIn> {
     );
   }
 
-
   final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
   void loginAndAuthenticateUser(BuildContext context) async{
     final ProgressDialog pr =  ProgressDialog(context,type: ProgressDialogType.Normal, isDismissible: true, showLogs: true);
-
-
 
     pr.style(
         message: 'Logging In , Please Wait',

@@ -5,9 +5,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:intl/intl.dart';
 import 'package:nb_utils/nb_utils.dart';
+import 'package:progress_dialog/progress_dialog.dart';
 import 'package:route_it_v2/ri/model/QiBusModel.dart';
+import 'package:route_it_v2/ri/screen/About.dart';
 import 'package:route_it_v2/ri/screen/FirstPreferencePage.dart';
 import 'package:route_it_v2/ri/screen/HomePage.dart';
+import 'package:route_it_v2/ri/screen/QIBusDashboard.dart';
 import 'package:route_it_v2/ri/screen/QIBusNotification.dart';
 import 'package:route_it_v2/ri/screen/RouteUpload.dart';
 import 'package:route_it_v2/ri/screen/DisplayAllRoutes.dart';
@@ -139,6 +142,7 @@ class _NavigatorPageState extends State<NavigatorPage> {
   TextStyle(fontSize: 30, fontWeight: FontWeight.bold);
     List<Widget> _widgetOptions = <Widget>[
       DisplaySearchedRoutes(),
+      //QIBusViewOffer(),
       HomePageRI(),
      // QIBusHome(),
       DisplayAllRoutes(),
@@ -190,6 +194,7 @@ class _NavigatorPageState extends State<NavigatorPage> {
 
 
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -200,9 +205,58 @@ class _NavigatorPageState extends State<NavigatorPage> {
         child: const Icon(Icons.upload_sharp),
         backgroundColor: Colors.green,
       ),
+      drawer: Drawer(
+
+        // Add a ListView to the drawer. This ensures the user can scroll
+        // through the options in the drawer if there isn't enough vertical
+        // space to fit everything.
+        child: ListView(
+
+          // Important: Remove any padding from the ListView.
+          padding: EdgeInsets.zero,
+          children: <Widget>[
+            DrawerHeader(
+              decoration: BoxDecoration(
+                color: Colors.white,
+              ),
+              child:  Image.asset('images/ri/app_logo.png'),
+            ),
+            ListTile(
+
+              title: Text('Edit Preferences'),
+              onTap: () {
+                Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => FirstPreference()));
+              },
+            ),
+            ListTile(
+              title: Text('About'),
+              onTap: () {
+                Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => About()));
+
+              },
+            ),
+          ],
+        ),
+      ),
       appBar: AppBar(
         actions: [
-          ElevatedButton(onPressed: (){
+          ElevatedButton(onPressed: ()async{
+            final ProgressDialog prx =  ProgressDialog(context,type: ProgressDialogType.Normal, isDismissible: true, showLogs: true);
+            prx.style(
+                message: 'Logging Out , Please Wait',
+                borderRadius: 10.0,
+                backgroundColor: Colors.white,
+                progressWidget: CircularProgressIndicator(),
+                elevation: 10.0,
+                insetAnimCurve: Curves.easeInOut,
+
+                progressTextStyle: TextStyle(
+                    color: Colors.black, fontSize: 13.0, fontWeight: FontWeight.w400),
+                messageTextStyle: TextStyle(
+                    color: Colors.black, fontSize: 19.0, fontWeight: FontWeight.w600)
+            );
+            await prx.show();
+
             signOut(context);
             sortedDocIds.clear();
             sortedMap.clear();
@@ -210,6 +264,7 @@ class _NavigatorPageState extends State<NavigatorPage> {
             fromList.clear();
             toFromList.clear();
             allRoutesAccordingToPreference.clear();
+            await prx.hide();
           }, child: Icon(Icons.power_settings_new_sharp))
         ],
         title: Center(child: const Text('Route It')),
@@ -218,6 +273,7 @@ class _NavigatorPageState extends State<NavigatorPage> {
         child: _widgetOptions.elementAt(_selectedIndex),
       ),
       bottomNavigationBar: BottomNavigationBar(
+        backgroundColor: Colors.blue[800],
         items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(
             icon: Icon(Icons.search),
@@ -233,7 +289,7 @@ class _NavigatorPageState extends State<NavigatorPage> {
           ),
         ],
         currentIndex: _selectedIndex,
-        selectedItemColor: Colors.amber[800],
+        selectedItemColor: Colors.white,
         onTap: _onItemTapped,
       ),
     );
