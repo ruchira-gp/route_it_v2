@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:route_it_v2/ri/screen/QIBusHome.dart';
+import 'package:route_it_v2/ri/screen/RiHome.dart';
 class FirstPreference extends StatefulWidget {
 
 

@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:route_it_v2/ri/screen/QIBusNotification.dart';
 
-import 'QiBusColors.dart';
-import 'QiBusConstant.dart';
-import 'QiBusExtension.dart';
+
+import 'RiColors.dart';
+import 'RiConstant.dart';
 
 Widget text(String text,
     {var fontSize = textSizeMedium,
@@ -130,7 +129,7 @@ class TopBar extends StatefulWidget {
 class TopBarState extends State<TopBar> {
   @override
   Widget build(BuildContext context) {
-    changeStatusColor(qIBus_colorPrimary);
+
     return SafeArea(
       child: Stack(
         children: <Widget>[
@@ -155,7 +154,7 @@ class TopBarState extends State<TopBar> {
                                   color: qIBus_white,
                                 ),
                                 onPressed: () {
-                                  finish(context);
+
                                 },
                               ),
                               Padding(
@@ -171,7 +170,7 @@ class TopBarState extends State<TopBar> {
                     widget.isVisible
                         ? GestureDetector(
                             onTap: () {
-                              launchScreen(context, QIBusNotification.tag);
+
                             },
                             child: Container(
                               margin: EdgeInsets.only(
@@ -186,7 +185,7 @@ class TopBarState extends State<TopBar> {
                             ))
                         : GestureDetector(
                             onTap: () {
-                              launchScreen(context, QIBusNotification.tag);
+
                             },
                             child: Container(
                               margin: EdgeInsets.only(
@@ -243,7 +242,7 @@ Widget title(var title, BuildContext context) {
                         color: qIBus_white,
                       ),
                       onPressed: () {
-                        finish(context);
+
                       },
                     ),
                     Padding(

@@ -4,8 +4,8 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:route_it_v2/ri/screen/HomePage.dart';
-import 'package:route_it_v2/ri/screen/QIBusHome.dart';
-import 'package:route_it_v2/ri/screen/QIBusSignIn.dart';
+import 'package:route_it_v2/ri/screen/RiHome.dart';
+import 'package:route_it_v2/ri/screen/RiSignIn.dart';
 
 void main() async{
   WidgetsFlutterBinding.ensureInitialized();

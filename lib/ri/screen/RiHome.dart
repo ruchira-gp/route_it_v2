@@ -1,33 +1,18 @@
-import 'package:cached_network_image/cached_network_image.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
-import 'package:intl/intl.dart';
-import 'package:nb_utils/nb_utils.dart';
+
 import 'package:progress_dialog/progress_dialog.dart';
-import 'package:route_it_v2/ri/model/QiBusModel.dart';
+
 import 'package:route_it_v2/ri/screen/About.dart';
 import 'package:route_it_v2/ri/screen/FirstPreferencePage.dart';
 import 'package:route_it_v2/ri/screen/HomePage.dart';
-import 'package:route_it_v2/ri/screen/QIBusDashboard.dart';
-import 'package:route_it_v2/ri/screen/QIBusNotification.dart';
+
 import 'package:route_it_v2/ri/screen/RouteUpload.dart';
 import 'package:route_it_v2/ri/screen/DisplayAllRoutes.dart';
-import 'package:route_it_v2/ri/utils/QiBusColors.dart';
-import 'package:route_it_v2/ri/utils/QiBusConstant.dart';
-import 'package:route_it_v2/ri/utils/QiBusDataGenerator.dart';
-import 'package:route_it_v2/ri/utils/QiBusExtension.dart';
-import 'package:route_it_v2/ri/utils/QiBusImages.dart';
-import 'package:route_it_v2/ri/utils/QiBusStrings.dart';
-import 'package:route_it_v2/ri/utils/QiBusWidget.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+
 import 'package:route_it_v2/ri/utils/AllRequiredFunctions.dart';
-import 'package:document_analysis/document_analysis.dart';
-import 'QIBusSearhList.dart';
-import 'QIBusSignIn.dart';
-import 'QIBusViewOffer.dart';
-import 'dart:collection';
+
 import 'package:route_it_v2/ri/screen/DisplaySearchedRoutes.dart';
 
 class QIBusHome extends StatefulWidget {

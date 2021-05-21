@@ -3,16 +3,16 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import 'package:route_it_v2/ri/screen/FirstPreferencePage.dart';
-import 'package:route_it_v2/ri/screen/QIBusHome.dart';
+import 'package:route_it_v2/ri/screen/RiHome.dart';
 
 import 'package:route_it_v2/ri/screen/registrationScreen.dart';
 
-import 'package:route_it_v2/ri/utils/QiBusColors.dart';
-import 'package:route_it_v2/ri/utils/QiBusConstant.dart';
-import 'package:route_it_v2/ri/utils/QiBusExtension.dart';
+import 'package:route_it_v2/ri/utils/RiColors.dart';
+import 'package:route_it_v2/ri/utils/RiConstant.dart';
+import 'package:route_it_v2/ri/utils/RiExtensions.dart';
 
-import 'package:route_it_v2/ri/utils/QiBusStrings.dart';
-import 'package:route_it_v2/ri/utils/QiBusWidget.dart';
+import 'package:route_it_v2/ri/utils/RiStrings.dart';
+import 'package:route_it_v2/ri/utils/RiWidget.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:progress_dialog/progress_dialog.dart';
 import 'package:route_it_v2/ri/utils/AllRequiredFunctions.dart';

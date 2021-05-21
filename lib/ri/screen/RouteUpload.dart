@@ -2,10 +2,7 @@ import 'dart:io';
 import 'package:intl/intl.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
-import 'package:route_it_v2/ri/screen/HomePage.dart';
-import 'package:route_it_v2/ri/screen/QIBusHome.dart';
-import 'package:route_it_v2/ri/screen/QIBusSignIn.dart';
+import 'package:route_it_v2/ri/screen/RiHome.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:clipboard/clipboard.dart';
@@ -291,7 +288,7 @@ class _RouteUploadState extends State<RouteUpload> {
                               style: Theme.of(context)
                                   .textTheme
                                   .subtitle1
-                                  .copyWith(color: Colors.black38),
+                                  .copyWith(color: Colors.black),
                             ),
                             leading: Radio(
                               value: i,
@@ -300,6 +297,11 @@ class _RouteUploadState extends State<RouteUpload> {
                                 setState(() {
                                   _value = value;
                                   modeTextEditingController.text = modes[value];
+                                  if(modeTextEditingController.text==null){
+                                    setState(() {
+                                      modeTextEditingController.text='Car';
+                                    });
+                                  }
                                 });
                               },
                             ),

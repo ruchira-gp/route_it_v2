@@ -1,4 +1,3 @@
-const app_name = "QIBus";
 const QIBus_txt_high_hill_manali = "High Hill Manali";
 const QIBus_txt_4_days_3_nights = "4 Days 3 Nights";
 const QIBus_txt_new_package = "New Packages";

@@ -3,17 +3,12 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:document_analysis/document_analysis.dart';
 import 'dart:collection';
-import 'package:route_it_v2/ri/screen/QIBusSignIn.dart';
+import 'package:route_it_v2/ri/screen/RiSignIn.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
-import 'package:route_it_v2/ri/model/QiBusModel.dart';
-import 'package:route_it_v2/ri/utils/QiBusColors.dart';
-import 'package:route_it_v2/ri/utils/QiBusConstant.dart';
-import 'package:route_it_v2/ri/utils/QiBusDataGenerator.dart';
-import 'package:route_it_v2/ri/utils/QiBusImages.dart';
-import 'package:route_it_v2/ri/utils/QiBusStrings.dart';
-import 'package:route_it_v2/ri/utils/QiBusWidget.dart';
+import 'package:route_it_v2/ri/utils/RiColors.dart';
+import 'package:route_it_v2/ri/utils/RiConstant.dart';
+import 'package:route_it_v2/ri/utils/RiWidget.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 List<String> allDocIds = []; // List of all Document ID
