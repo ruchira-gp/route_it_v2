@@ -162,7 +162,7 @@ class _RouteUploadState extends State<RouteUpload> {
     });
   }
 
-  List modes = ['Motorcycle', 'Car', 'Bus', 'Flight'];
+  List modes = ['Motorcycle', 'Car', 'Bus', 'Train'];
   double i = 1;
   int _value = 1;
   DateTime currentDate = DateTime.now();
