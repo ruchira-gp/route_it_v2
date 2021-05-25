@@ -43,7 +43,7 @@ class _DisplaySearchedRoutesState extends State<DisplaySearchedRoutes> {
   _buildList() {
     List<TripDetails> VD = [];
     allRoutesAccordingToPreference.forEach((element) {
-      VD.add(TripDetails(desc: element.desc,title: element.title,tripImage: element.tripImage,toCity: element.toCity,fromCity: element.fromCity,expenses: element.expenses,mode:element.mode,link:element.link));
+      VD.add(TripDetails(desc: element.desc,title: element.title,tripImage: element.tripImage,toCity: element.toCity,fromCity: element.fromCity,expenses: element.expenses,mode:element.mode,link:element.link,likes: element.likes,docid: element.docid,));
     });
 
     return VD;
@@ -52,7 +52,7 @@ class _DisplaySearchedRoutesState extends State<DisplaySearchedRoutes> {
   _buildSearchList() {
     List<TripDetails> VD = [];
     allRoutesAccordingToPreference.forEach((element) {
-      VD.add(TripDetails(desc: element.desc,title: element.title,tripImage: element.tripImage,toCity: element.toCity,fromCity: element.fromCity,expenses: element.expenses,mode:element.mode,link:element.link));
+      VD.add(TripDetails(desc: element.desc,title: element.title,tripImage: element.tripImage,toCity: element.toCity,fromCity: element.fromCity,expenses: element.expenses,mode:element.mode,link:element.link,likes: element.likes,docid: element.docid));
     });
     if (_searchText.isEmpty) {
       return VD;
@@ -66,7 +66,7 @@ class _DisplaySearchedRoutesState extends State<DisplaySearchedRoutes> {
             .toString()
             .toLowerCase()
             .contains(_searchText.toLowerCase()))
-          _searchList.add(TripDetails(desc: element.desc,title: element.title,tripImage: element.tripImage,toCity: element.toCity,fromCity: element.fromCity,expenses: element.expenses,mode:element.mode,link:element.link));
+          _searchList.add(TripDetails(desc: element.desc,title: element.title,tripImage: element.tripImage,toCity: element.toCity,fromCity: element.fromCity,expenses: element.expenses,mode:element.mode,link:element.link,likes: element.likes,docid: element.docid));
       });
       setState(() {
         B = _searchList;

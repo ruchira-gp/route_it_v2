@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_options.dart';
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:pull_to_refresh/pull_to_refresh.dart';
+import 'package:route_it_v2/ri/utils/AllRequiredFunctions.dart';
+
 final List<String> quoteList =[
 "The journey of a thousand miles begins with a single step.",
 "Adventures are the best way to learn.",
@@ -79,44 +82,86 @@ class HomePageRI extends StatefulWidget {
 }
 
 class _HomePageRIState extends State<HomePageRI> {
+
+
+  RefreshController _refreshController =
+  RefreshController(initialRefresh: false);
+
+  void _onRefresh() {
+    if(sortedMap!=null)
+      sortedMap.clear();
+    if(sortedDocIds!=null)// sorted map got after cosine function
+      sortedDocIds.clear();// List of all sorted Document IDs after cosine function
+    allDocIds.clear();
+    toList = []; // toCity List
+    fromList = []; // fromCity list
+    toFromList = []; // toCity list , given fromCity
+    allRoutesAccordingToPreference = [] ;
+    retrieveAllDocIds();
+    //retrieveRoutePreferences();
+    //retrieveUserRoutePreference();
+    getToList();
+    getFromList();
+    getToFromList('Mysore');
+    cosineDist();
+    sortDocIdsAfterCosine();
+
+    _refreshController.refreshCompleted();
+  }
+
+  void _onLoading() async{
+
+    await Future.delayed(Duration(milliseconds: 1000));
+
+    _refreshController.loadComplete();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body:    Builder(
-        builder: (context) {
-          final double height = MediaQuery.of(context).size.height;
-          return CarouselSlider(
-            options: CarouselOptions(
-              height: height,
-              autoPlay: true,
-              autoPlayInterval: Duration(seconds: 3),
-              viewportFraction: 1.0,
-              enlargeCenterPage: false,
-              // autoPlay: false,
-            ),
-            items: imgList.map((item) => Container(
-              child: Stack(
-                children: [
-                  Center(
-                      child: Image.network(item, fit: BoxFit.cover, height: height,)
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.only(left:10.0,right: 10.0,top:400),
-                    child: Text(
-                      quoteList[ imgList.indexOf(item) ],
-                      textAlign: TextAlign.left,
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 30.0,
-                        fontWeight: FontWeight.bold,
+      body:    SmartRefresher(
+        enablePullDown: true,
+        enablePullUp: true,
+        header: WaterDropHeader(),
+        controller: _refreshController,
+        onRefresh: _onRefresh,
+        onLoading: _onLoading,
+        child: Builder(
+          builder: (context) {
+            final double height = MediaQuery.of(context).size.height;
+            return CarouselSlider(
+              options: CarouselOptions(
+                height: height,
+                autoPlay: true,
+                autoPlayInterval: Duration(seconds: 3),
+                viewportFraction: 1.0,
+                enlargeCenterPage: false,
+                // autoPlay: false,
+              ),
+              items: imgList.map((item) => Container(
+                child: Stack(
+                  children: [
+                    Center(
+                        child: Image.network(item, fit: BoxFit.cover, height: height,)
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(left:10.0,right: 10.0,top:400),
+                      child: Text(
+                        quoteList[ imgList.indexOf(item) ],
+                        textAlign: TextAlign.left,
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 30.0,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
                     ),
-                  ),
-                ],
-              ),
-            )).toList(),
-          );
-        },
+                  ],
+                ),
+              )).toList(),
+            );
+          },
+        ),
       ),
     );
   }

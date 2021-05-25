@@ -26,7 +26,9 @@ List<TripDetails> allRoutesAccordingToPreference = []; // List of all routes
 
 void launchURL(url) async =>
     await canLaunch(url) ? await launch(url) : throw 'Could not launch $url';
+
 class TripDetails extends StatelessWidget {
+  final String docid;
   final String desc;
   final String title;
   final String tripImage;
@@ -35,12 +37,15 @@ class TripDetails extends StatelessWidget {
   final String duration;
   final String expenses;
   final String mode;
+  final int likes;
   // ignore: non_constant_identifier_names
   final String travel_month;
   final String link;
 
   TripDetails(
       {this.fromCity,
+      this.likes,
+      this.docid,
       this.desc,
       this.title,
       this.toCity,
@@ -48,216 +53,236 @@ class TripDetails extends StatelessWidget {
       this.duration,
       this.expenses,
       this.mode,
-        this.link,
+      this.link,
       // ignore: non_constant_identifier_names
       this.travel_month});
+  Color colour = Colors.blue[900];
   @override
   Widget build(BuildContext context) {
     var width = MediaQuery.of(context).size.width;
     return GestureDetector(
-      onTap: () {
-        showDialog(
-            context: context,
-            builder: (BuildContext context) {
-              return AlertDialog(
-                title: Center(child: Text('Trip Details')),
-                content: Container(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      ClipRRect(
-                          borderRadius: BorderRadius.only(
-                            topRight: Radius.circular(spacing_middle),
-                            topLeft: Radius.circular(spacing_middle),
+        onTap: () {
+          showDialog(
+              context: context,
+              builder: (BuildContext context) {
+                return AlertDialog(
+                  title: Center(child: Text('Trip Details')),
+                  content: Container(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        ClipRRect(
+                            borderRadius: BorderRadius.only(
+                              topRight: Radius.circular(spacing_middle),
+                              topLeft: Radius.circular(spacing_middle),
+                            ),
+                            child: Stack(
+                              children: <Widget>[
+                                Container(
+                                  color: Colors.white,
+                                  // child: Image.network(tripImage) ,
+                                  child: CachedNetworkImage(
+                                    imageUrl: tripImage,
+                                    height: width * 0.3,
+                                    fit: BoxFit.none,
+                                    width: width,
+                                  ),
+                                )
+                              ],
+                            )),
+                        SizedBox(
+                          height: 20,
+                        ),
+                        Text(
+                          title,
+                          style: TextStyle(
+                              fontSize: 20,
+                              fontWeight: FontWeight.w600,
+                              fontStyle: FontStyle.normal),
+                        ),
+                        SizedBox(
+                          height: 15,
+                        ),
+                        Text(
+                          desc,
+                          style: TextStyle(
+                              fontSize: 15,
+                              fontWeight: FontWeight.w600,
+                              fontStyle: FontStyle.normal),
+                        ),
+                        SizedBox(
+                          height: 15,
+                        ),
+                        text("From : $fromCity",
+                            textAllCaps: true, fontFamily: fontMedium),
+                        SizedBox(
+                          height: 15,
+                        ),
+                        text("To : $toCity",
+                            textAllCaps: true, fontFamily: fontMedium),
+                        SizedBox(
+                          height: 15,
+                        ),
+                        text("Expenses : $expenses",
+                            textAllCaps: true, fontFamily: fontMedium),
+                        SizedBox(
+                          height: 15,
+                        ),
+                        text("Mode of Travel : $mode",
+                            textAllCaps: true, fontFamily: fontMedium),
+                        SizedBox(
+                          height: 15,
+                        ),
+                        ElevatedButton(
+                            onPressed: () async {
+                              await launch(link);
+                              // launchURL(link);
+                            },
+                            child: Text('Guide Me !'))
+                      ],
+                    ),
+                  ),
+                  actions: <Widget>[
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.only(left: 8.0, right: 40),
+                          child: FlatButton(
+                              child: Icon(
+                                Icons.thumb_up,
+                                color: colour,
+                              ),
+                              onPressed: () {
+                                if (colour == Colors.green) {
+                                  ScaffoldMessenger.of(context)
+                                      .showSnackBar(SnackBar(
+                                    content: Text("$title Route Disiked"),
+                                  ));
+                                  colour = Colors.blue[900];
+                                  final firestoreInstance =
+                                      FirebaseFirestore.instance;
+                                  firestoreInstance
+                                      .collection("trip")
+                                      .doc(docid)
+                                      .update({
+                                    "likes": likes - 1,
+                                  }).then((_) {
+                                    print("success!");
+                                  });
+                                  Navigator.pop(context);
+                                } else {
+                                  ScaffoldMessenger.of(context)
+                                      .showSnackBar(SnackBar(
+                                    content: Text("$title Route Liked"),
+                                  ));
+                                  colour = Colors.green;
+
+                                  final firestoreInstance =
+                                      FirebaseFirestore.instance;
+                                  firestoreInstance
+                                      .collection("trip")
+                                      .doc(docid)
+                                      .update({
+                                    "likes": likes + 1,
+                                  }).then((_) {
+                                    print("success!");
+                                  });
+                                  Navigator.pop(context);
+                                }
+                              }),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 35),
+                          child: FlatButton(
+                            child: Text('OK'),
+                            onPressed: () {
+                              Navigator.pop(context);
+                            },
                           ),
-                          child: Stack(
-                            children: <Widget>[
-                              Container(
-                                color:Colors.white,
-                                // child: Image.network(tripImage) ,
-                                child: CachedNetworkImage(
-                                  imageUrl: tripImage,
-                                  height: width * 0.3,
-                                  fit: BoxFit.none,
-                                  width: width,
-                                ),
-                              )
-                            ],
-                          )),
+                        ),
+                      ],
+                    ),
+                  ],
+                );
+              });
+        },
+        child: Container(
+          width: width * 0.7,
+          margin: EdgeInsets.only(
+              left: spacing_standard_new,
+              right: spacing_standard_new,
+              bottom: spacing_standard_new),
+          decoration: boxDecoration(
+              showShadow: true, bgColor: qIBus_white, radius: spacing_middle),
+          child: Column(
+            children: <Widget>[
+              ClipRRect(
+                  borderRadius: BorderRadius.only(
+                    topRight: Radius.circular(spacing_middle),
+                    topLeft: Radius.circular(spacing_middle),
+                  ),
+                  child: Stack(
+                    children: <Widget>[
+                      Container(
+                        color: Colors.white,
+                        child: CachedNetworkImage(
+                          imageUrl: tripImage,
+                          height: width * 0.3,
+                          fit: BoxFit.none,
+                          width: width,
+                        ),
+                      )
+                    ],
+                  )),
+              SizedBox(
+                height: 8,
+              ),
+              Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
                       SizedBox(
-                        height: 20,
+                        width: spacing_control_half,
                       ),
-                      Text(
-                        title,
-                        style: TextStyle(
-                            fontSize: 20,
-                            fontWeight: FontWeight.w600,
-                            fontStyle: FontStyle.normal),
-                      ),
-                      SizedBox(
-                        height: 15,
-                      ),
-
-                      Text(
-                        desc,
-                        style: TextStyle(
-                            fontSize: 15,
-                            fontWeight: FontWeight.w600,
-                            fontStyle: FontStyle.normal),
-                      ),
-                      SizedBox(
-                        height: 15,
-                      ),
-
-                      text("From : $fromCity", textAllCaps: true, fontFamily: fontMedium),
-                      SizedBox(
-                        height: 15,
-                      ),
-                      text("To : $toCity", textAllCaps: true, fontFamily: fontMedium),
-                      SizedBox(
-                        height: 15,
-                      ),
-
-                      text("Expenses : $expenses", textAllCaps: true, fontFamily: fontMedium),
-                      SizedBox(
-                        height: 15,
-                      ),
-                      text("Mode of Travel : $mode", textAllCaps: true, fontFamily: fontMedium),
-                      SizedBox(
-                        height: 15,
-                      ),
-                      ElevatedButton(onPressed: ()async{
-                        await launch(link);
-                       // launchURL(link);
-                      }, child: Text('Guide Me !'))
+                      text(title, textAllCaps: true, fontFamily: fontMedium),
                     ],
                   ),
-                ),
-                actions: <Widget>[
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 35),
-                    child: FlatButton(
-                      child: Text('OK'),
-                      onPressed: () {
-                        Navigator.pop(context);
-                      },
-                    ),
-                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      text("From : $fromCity",
+                          textAllCaps: true, fontFamily: fontMedium),
+                      text("To : $toCity",
+                          textAllCaps: true, fontFamily: fontMedium),
+                      Row(
+                        children: [
+                          Icon(
+                            Icons.thumb_up,
+                            color: Colors.green,
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.all(5.0),
+                            child: Text('$likes'),
+                          ),
+                        ],
+                      )
+                    ],
+                  )
                 ],
-              );
-            });
-      },
-
-      child:Container(
-        width: width * 0.7,
-        margin: EdgeInsets.only(
-            left: spacing_standard_new,
-            right: spacing_standard_new,
-            bottom: spacing_standard_new),
-        decoration: boxDecoration(
-            showShadow: true, bgColor: qIBus_white, radius: spacing_middle),
-        child: Column(
-          children: <Widget>[
-            ClipRRect(
-                borderRadius: BorderRadius.only(
-                  topRight: Radius.circular(spacing_middle),
-                  topLeft: Radius.circular(spacing_middle),
-                ),
-                child: Stack(
-                  children: <Widget>[
-                    Container(
-                      color:Colors.white,
-                      child: CachedNetworkImage(
-                        imageUrl: tripImage,
-                        height: width * 0.3,
-                        fit: BoxFit.none,
-                        width: width,
-                      ),
-                    )
-                  ],
-                )),
-            SizedBox(
-              height: 8,
-            ),
-            Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: <Widget>[
-                    SizedBox(
-                      width: spacing_control_half,
-                    ),
-                    text(title, textAllCaps: true, fontFamily: fontMedium),
-                  ],
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    text("From : $fromCity", textAllCaps: true, fontFamily: fontMedium),
-                    text("To : $toCity", textAllCaps: true, fontFamily: fontMedium),
-                  ],
-                )
-
-              ],
-            ),
-            SizedBox(
-              height: 8,
-            ),
-          ],
-        ),
-      )
-      // child: Card(
-      //     color: Colors.white,
-      //     child: Padding(
-      //       padding: const EdgeInsets.all(20.0),
-      //       child: Column(
-      //         crossAxisAlignment: CrossAxisAlignment.start,
-      //         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-      //         children: [
-      //           Row(
-      //             children: [
-      //               Container(
-      //                 height: 120.0,
-      //                 width: 120.0,
-      //                 decoration: BoxDecoration(
-      //                   image: DecorationImage(
-      //                     image: NetworkImage(tripImage, scale: 5),
-      //                     fit: BoxFit.fill,
-      //                   ),
-      //                   shape: BoxShape.rectangle,
-      //                 ),
-      //               ),
-      //               SizedBox(
-      //                 width: 20,
-      //               ),
-      //               Column(
-      //                 mainAxisAlignment: MainAxisAlignment.center,
-      //                 children: [
-      //                   Text(
-      //                     '$title',
-      //                     style: TextStyle(fontWeight: FontWeight.bold),
-      //                   ),
-      //                   Text(
-      //                     'from: $fromCity',
-      //                     style: TextStyle(color: Colors.green),
-      //                   ),
-      //                   Padding(
-      //                     padding: const EdgeInsets.all(8.0),
-      //                     child: Text('to : $toCity'),
-      //                   ),
-      //
-      //                 ],
-      //               )
-      //             ],
-      //           ),
-      //         ],
-      //       ),
-      //     )),
-    );
+              ),
+              SizedBox(
+                height: 8,
+              ),
+            ],
+          ),
+        ));
   }
 }
 
@@ -427,41 +452,51 @@ cosineDist() async {
   print('7) Sorted DOc ids2>>>>>>>> : $sortedDocIds2');
 
   List<TripDetails> allRoutesAccordingToPreference2 = [];
+  String docid = "";
   String desc = "";
   String title = "";
   String tripImage = "";
   String toCity = "";
   String fromCity = "";
-  String link="";
-  String expenses="";
-  String mode="";
-  int o=0;
-while(o<sortedDocIds2.length){
-  await firestoreInstance.collection("trip").doc(sortedDocIds2[o]).get().then((value) {
-    //print("doc id inside loop : ${sortedDocIds2[o]}");
-    desc = (value.data()["info"]['desc']);
-    title = (value.data()["info"]['title']);
-    tripImage = (value.data()["info"]['photo']);
-    toCity = (value.data()['route']["route_info"]['to']);
-    fromCity = (value.data()['route']["route_info"]['from']);
-    link=(value.data()['route']["route_info"]['link']);
-    expenses=(value.data()['misc']["expenses"]);
-    mode=(value.data()['misc']["mode"]);
-      });
+  String link = "";
+  String expenses = "";
+  String mode = "";
+  int likes = 0;
+  int o = 0;
+  while (o < sortedDocIds2.length) {
+    await firestoreInstance
+        .collection("trip")
+        .doc(sortedDocIds2[o])
+        .get()
+        .then((value) {
+      //print("doc id inside loop : ${sortedDocIds2[o]}");
+      docid = sortedDocIds2[o];
+      desc = (value.data()["info"]['desc']);
+      title = (value.data()["info"]['title']);
+      tripImage = (value.data()["info"]['photo']);
+      toCity = (value.data()['route']["route_info"]['to']);
+      fromCity = (value.data()['route']["route_info"]['from']);
+      link = (value.data()['route']["route_info"]['link']);
+      expenses = (value.data()['misc']["expenses"]);
+      mode = (value.data()['misc']["mode"]);
+      likes = (value.data()['likes']);
+    });
     allRoutesAccordingToPreference.add(TripDetails(
-    desc: desc,
-    title: title,
-    tripImage: tripImage,
-    toCity: toCity,
-    fromCity: fromCity,
-    link: link,
-    expenses: expenses,
-    mode: mode,
-  ));
-  print(sortedDocIds2[o]);
-  o++;
-      }
-      print(allRoutesAccordingToPreference);
+      desc: desc,
+      title: title,
+      tripImage: tripImage,
+      toCity: toCity,
+      fromCity: fromCity,
+      link: link,
+      expenses: expenses,
+      mode: mode,
+      docid: docid,
+      likes: likes,
+    ));
+    print(sortedDocIds2[o]);
+    o++;
+  }
+  print(allRoutesAccordingToPreference);
   // sortedDocIds2.forEach((element)  {
   //    firestoreInstance.collection("trip").doc(element).get().then((value) {
   //     print("doc id inside loop : $element");
@@ -588,7 +623,7 @@ getToFromList(String fromCity) async {
 //--------------------------------------------------------------------------------------------------------
 // Converts the route details into object of type TripDetails and stores it in allRoutesAccordingToPreference
 
-getAllRoutesAccordingToPreference()  {
+getAllRoutesAccordingToPreference() {
   print('Sorted DOc ids 222222: $sortedDocIds');
   final firestoreInstance = FirebaseFirestore.instance;
   String desc = "";
@@ -596,20 +631,24 @@ getAllRoutesAccordingToPreference()  {
   String tripImage = "";
   String toCity = "";
   String fromCity = "";
-  String link="";
-  String expenses="";
-  String mode="";
-   sortedDocIds.forEach((element)  {
-     firestoreInstance.collection("trip").doc(element).get().then((value) {
+  String link = "";
+  String expenses = "";
+  String mode = "";
+  String docid = "";
+  int likes = 0;
+  sortedDocIds.forEach((element) {
+    firestoreInstance.collection("trip").doc(element).get().then((value) {
       desc = (value.data()["info"]['desc']);
       title = (value.data()["info"]['title']);
       tripImage = (value.data()["info"]['photo']);
       toCity = (value.data()['route']["route_info"]['to']);
       fromCity = (value.data()['route']["route_info"]['from']);
       link = (value.data()['route']["route_info"]['link']);
-      expenses=(value.data()['misc']["expenses"]);
-      mode=(value.data()['misc']["mode"]);
-       allRoutesAccordingToPreference.add(TripDetails(
+      expenses = (value.data()['misc']["expenses"]);
+      mode = (value.data()['misc']["mode"]);
+      docid = element;
+      likes = (value.data()['likes']);
+      allRoutesAccordingToPreference.add(TripDetails(
         desc: desc,
         title: title,
         tripImage: tripImage,
@@ -618,6 +657,8 @@ getAllRoutesAccordingToPreference()  {
         link: link,
         mode: mode,
         expenses: expenses,
+        likes: likes,
+        docid: docid,
       ));
     });
   });
