@@ -75,7 +75,7 @@ getPetrolBunks(List midPoint) async {
     'client_secret': 'PCDGO5DYACJ1BAHD0QVNRYKZ5FYYTQ0IQ4S3UHEYWTWWGZ2W',
     'v': '20210525',
     'll': '${midPoint[4]},${midPoint[5]}',
-    'radius': '30000',
+    'radius': '35000',
     'query': 'petrol bunk'
   };
 
@@ -83,15 +83,20 @@ getPetrolBunks(List midPoint) async {
       Uri.parse("https://api.foursquare.com/v2/venues/search"),
       body: data);
   var jsonResponse = json.decode(response.body);
-
-  print(jsonResponse['response']['venues'][0]['name']);
-  print(jsonResponse['response']['venues'][0]['location']['lat']);
-  print(jsonResponse['response']['venues'][0]['location']['lng']);
-  return [
-    jsonResponse['response']['venues'][0]['name'],
-    jsonResponse['response']['venues'][0]['location']['lat'],
-    jsonResponse['response']['venues'][0]['location']['lng']
-  ];
+  print(jsonResponse);
+  if (jsonResponse['response']['venues'].toString() == "[]") {
+    print('Empty List');
+    return null;
+  } else {
+    print(jsonResponse['response']['venues'][0]['name']);
+    print(jsonResponse['response']['venues'][0]['location']['lat']);
+    print(jsonResponse['response']['venues'][0]['location']['lng']);
+    return [
+      jsonResponse['response']['venues'][0]['name'],
+      jsonResponse['response']['venues'][0]['location']['lat'],
+      jsonResponse['response']['venues'][0]['location']['lng']
+    ];
+  }
 }
 
 getEateries(List midPoint) async {
@@ -100,7 +105,7 @@ getEateries(List midPoint) async {
     'client_secret': 'PCDGO5DYACJ1BAHD0QVNRYKZ5FYYTQ0IQ4S3UHEYWTWWGZ2W',
     'v': '20210525',
     'll': '${midPoint[4]},${midPoint[5]}',
-    'radius': '10000',
+    'radius': '25000',
     'query': 'restaurant'
   };
 
@@ -110,15 +115,21 @@ getEateries(List midPoint) async {
   //print(response.body);
 
   var jsonResponse = json.decode(response.body);
-  //print(jsonResponse);
-  jsonResponse['response']['venues'].forEach((element) {
-    print(element['name']);
-  });
-  return [
-    jsonResponse['response']['venues'][0]['name'],
-    jsonResponse['response']['venues'][0]['location']['lat'],
-    jsonResponse['response']['venues'][0]['location']['lng']
-  ];
+  print(jsonResponse);
+  if (jsonResponse['response']['venues'].toString() == "[]") {
+    print('Empty List');
+    return null;
+  } else {
+    jsonResponse['response']['venues'].forEach((element) {
+      print(element['name']);
+    });
+
+    return [
+      jsonResponse['response']['venues'][0]['name'],
+      jsonResponse['response']['venues'][0]['location']['lat'],
+      jsonResponse['response']['venues'][0]['location']['lng']
+    ];
+  }
 }
 
 List<String> allDocIds = []; // List of all Document ID
@@ -212,7 +223,6 @@ class TripDetails extends StatefulWidget {
 }
 
 class _TripDetailsState extends State<TripDetails> {
-
   Color colour = Colors.blue[900];
 
   @override
@@ -220,8 +230,8 @@ class _TripDetailsState extends State<TripDetails> {
     var width = MediaQuery.of(context).size.width;
     return GestureDetector(
         onTap: () {
-          bool _eateriesIsSelected =false;
-          bool _gasStationIsSelected=false;
+          bool _eateriesIsSelected = false;
+          bool _gasStationIsSelected = false;
           var one;
           getMidPoint(widget.link).then((xxx) {
             setState(() {
@@ -230,13 +240,10 @@ class _TripDetailsState extends State<TripDetails> {
             print(one);
           });
 
-
           showDialog(
               context: context,
-              builder: ( context) {
-                return StatefulBuilder(
-                    builder: (context, setState)
-                {
+              builder: (context) {
+                return StatefulBuilder(builder: (context, setState) {
                   return AlertDialog(
                     title: Center(child: Text('Trip Details')),
                     content: Container(
@@ -309,7 +316,7 @@ class _TripDetailsState extends State<TripDetails> {
                             LabeledCheckbox(
                               label: 'Eateries',
                               padding:
-                              const EdgeInsets.symmetric(horizontal: 20.0),
+                                  const EdgeInsets.symmetric(horizontal: 20.0),
                               value: _eateriesIsSelected,
                               onChanged: (bool newValue) {
                                 setState(() {
@@ -320,7 +327,7 @@ class _TripDetailsState extends State<TripDetails> {
                             LabeledCheckbox(
                               label: 'Gas Station',
                               padding:
-                              const EdgeInsets.symmetric(horizontal: 20.0),
+                                  const EdgeInsets.symmetric(horizontal: 20.0),
                               value: _gasStationIsSelected,
                               onChanged: (bool newValue) {
                                 setState(() {
@@ -330,30 +337,50 @@ class _TripDetailsState extends State<TripDetails> {
                             ),
                             ElevatedButton(
                                 onPressed: () async {
-                                  String a = "/\'${one[0]}" + ",${one[1]}\'";
-                                  String c =
-                                      "/\'${one[4]}" + ",${one[5]}\'";
-                                  String b = "/\'${one[2]}" + ",${one[3]}\'";
-                                  String pb = "";
-                                  String eat = "";
+                                  await getMidPoint(widget.link)
+                                      .then((one) async {
+                                    String a = "/\'${one[0]}" + ",${one[1]}\'";
+                                    String c = "/\'${one[4]}" + ",${one[5]}\'";
+                                    String b = "/\'${one[2]}" + ",${one[3]}\'";
+                                    String pb = "";
+                                    String eat = "";
 
-
-
-                                  if (_eateriesIsSelected == true) {
-                                    var y = await getEateries(one);
-                                    eat = "/\'${y[1].toString()}" +
-                                        ",${y[2].toString()}\'";
-                                  }
-                                  if (_gasStationIsSelected == true) {
-                                    var x = await getPetrolBunks(one);
-                                    pb = "/\'${x[1].toString()}" +
-                                        ",${x[2].toString()}\'";
-                                  }
-                                  String xx =
-                                      "https://www.google.com/maps/dir$a$pb$eat$b";
-                                  await launch(xx);
-                                  // launchURL(link);
+                                    if (_eateriesIsSelected == true) {
+                                      var y = await getEateries(one);
+                                      if (y == null) {
+                                        ScaffoldMessenger.of(context)
+                                            .showSnackBar(SnackBar(
+                                          content:
+                                          Text("No Suitable  eateries available"),
+                                        ));
+                                      } else {
+                                        eat = "/\'${y[1].toString()}" +
+                                            ",${y[2].toString()}\'";
+                                      }
+                                    }
+                                    if (_gasStationIsSelected == true) {
+                                      var x = await getPetrolBunks(one);
+                                      if(x==null)
+                                      {
+                                        ScaffoldMessenger.of(context)
+                                            .showSnackBar(SnackBar(
+                                          content:
+                                          Text("No Fuel Stations available"),
+                                        ));
+                                      }
+                                      else{
+                                      pb = "/\'${x[1].toString()}" +
+                                          ",${x[2].toString()}\'";
+                                    }
+                                    }
+                                    String xx =
+                                        "https://www.google.com/maps/dir$a$pb$eat$b";
+                                    await launch(xx);
+                                  });
                                 },
+
+                                // launchURL(link);
+
                                 child: Text('Guide Me !'))
                           ],
                         ),
@@ -365,8 +392,8 @@ class _TripDetailsState extends State<TripDetails> {
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
                           Padding(
-                            padding: const EdgeInsets.only(
-                                left: 8.0, right: 40),
+                            padding:
+                                const EdgeInsets.only(left: 8.0, right: 40),
                             child: FlatButton(
                                 child: Icon(
                                   Icons.thumb_up,
@@ -377,7 +404,7 @@ class _TripDetailsState extends State<TripDetails> {
                                     ScaffoldMessenger.of(context)
                                         .showSnackBar(SnackBar(
                                       content:
-                                      Text("${widget.title} Route Disiked"),
+                                          Text("${widget.title} Route Disiked"),
                                     ));
                                     colour = Colors.blue[900];
                                     final firestoreInstance =
@@ -395,7 +422,7 @@ class _TripDetailsState extends State<TripDetails> {
                                     ScaffoldMessenger.of(context)
                                         .showSnackBar(SnackBar(
                                       content:
-                                      Text("${widget.title} Route Liked"),
+                                          Text("${widget.title} Route Liked"),
                                     ));
                                     colour = Colors.green;
 
@@ -667,14 +694,11 @@ cosineDist() async {
   sortedMap = LinkedHashMap.fromIterable(sortedKeys,
       key: (k) => k, value: (k) => finalList[k]);
 
-
-  List cosinvevaluefrommap=[];
   print(sortedMap);
+  List aloha=[];
   sortedMap.forEach((key, value) {
     sortedDocIds.add(key);
-  });
-  sortedMap.forEach((key, value) {
-    cosinvevaluefrommap.add(value);
+    aloha.add(value);
   });
   print('6) Sorted DOc ids >>>>>> : $sortedDocIds');
   List<String> sortedDocIds2 = []..addAll(sortedDocIds);
@@ -726,11 +750,12 @@ cosineDist() async {
   }
   print(allRoutesAccordingToPreference);
   print(' ---------Match Percentage-------------');
-  int i=0;
- allRoutesAccordingToPreference.forEach((element) {
-   print("${element.title } =====> ${cosinvevaluefrommap[i]*100}");
-   i++;
- });
+  int i = 0;
+  allRoutesAccordingToPreference.forEach((element) {
+    var xyz=aloha[i] * 100;
+    print("${element.title} =====> $xyz");
+    i++;
+  });
   print(
       "allroutes according yo preference22 : $allRoutesAccordingToPreference2");
   print("allroutes according yo preference : $allRoutesAccordingToPreference");
