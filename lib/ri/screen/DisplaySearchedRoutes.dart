@@ -21,6 +21,7 @@ class _DisplaySearchedRoutesState extends State<DisplaySearchedRoutes> {
   final TextEditingController _searchQuery = TextEditingController();
 
   bool _IsSearching;
+  bool _filter;
   String _searchText = "";
 
   _DisplaySearchedRoutesState() {
@@ -39,7 +40,14 @@ class _DisplaySearchedRoutesState extends State<DisplaySearchedRoutes> {
     });
   }
 
-
+  _sort(){
+    List<TripDetails> VD = [];
+    allRoutesAccordingToPreference.forEach((element) {
+      VD.add(TripDetails(desc: element.desc,title: element.title,tripImage: element.tripImage,toCity: element.toCity,fromCity: element.fromCity,expenses: element.expenses,mode:element.mode,link:element.link,likes: element.likes,docid: element.docid,));
+    });
+    VD.sort((a,b)=>int.parse(a.expenses).compareTo(int.parse(b.expenses)));
+    return VD;
+  }
   _buildList() {
     List<TripDetails> VD = [];
     allRoutesAccordingToPreference.forEach((element) {
@@ -79,6 +87,7 @@ class _DisplaySearchedRoutesState extends State<DisplaySearchedRoutes> {
   void initState() {
     super.initState();
     _IsSearching = false;
+    _filter=false;
   }
 
   @override
@@ -91,7 +100,7 @@ class _DisplaySearchedRoutesState extends State<DisplaySearchedRoutes> {
         // gridDelegate:
         // SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2),
         padding: EdgeInsets.symmetric(vertical: 8.0),
-        children: _IsSearching ? _buildSearchList() : _buildList(),
+        children: _IsSearching ?  _buildSearchList() : (_filter?_sort():_buildList()),
       ),
 
     );
@@ -99,6 +108,14 @@ class _DisplaySearchedRoutesState extends State<DisplaySearchedRoutes> {
 
   Widget buildBar(BuildContext context) {
     return AppBar(
+        // ignore: deprecated_member_use
+        leading: FlatButton(child: ( Icon(Icons.filter_list_alt,color: Colors.white,)),
+        onPressed: (){
+          setState(() {
+            _filter=true;
+          });
+
+    },),
         centerTitle: true,
         title: appBarTitle,
         backgroundColor: Colors.blue,

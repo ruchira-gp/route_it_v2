@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
@@ -12,6 +13,113 @@ import 'package:route_it_v2/ri/utils/RiColors.dart';
 import 'package:route_it_v2/ri/utils/RiConstant.dart';
 import 'package:route_it_v2/ri/utils/RiWidget.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:http/http.dart' as http;
+
+String getLatLongString = "";
+
+double toLat = 0.0;
+double toLong = 0.0;
+double fromLat = 0.0;
+double fromLong = 0.0;
+getExpandedUrl(encryptedUrl) async {
+  var response = await http.get(
+    Uri.parse("http://expandurl.com/api/v1/?url=$encryptedUrl"),
+  );
+  String jsonResponse = response.body.toString();
+  return (jsonResponse);
+}
+
+getLatLong(strr) {
+  String str1 = strr.toString();
+  RegExp reg1 = new RegExp(r"![0-9][a-zA-Z]([0-9\.]{5,})");
+  String y = "";
+  List<String> route = [];
+  Iterable allMatches = reg1.allMatches(str1);
+  int i = 0;
+  allMatches.forEach((match) {
+    y = (str1.substring(match.start, match.end));
+    route.add(y.substring(
+      3,
+    ));
+  });
+  print(route);
+  return route;
+}
+
+getMidP(List latlonglist) {
+  fromLat = double.parse(latlonglist[0]);
+  fromLong = double.parse(latlonglist[1]);
+  toLat = double.parse(latlonglist[latlonglist.length - 2]);
+  toLong = double.parse(latlonglist[latlonglist.length - 1]);
+
+  var lat = (double.parse(latlonglist[0]) +
+          double.parse(latlonglist[latlonglist.length - 2])) /
+      2;
+  var long = (double.parse(latlonglist[1]) +
+          double.parse(latlonglist[latlonglist.length - 1])) /
+      2;
+  return [fromLat, fromLong, toLat, toLong, lat, long];
+}
+
+// available configuration for multiple choice
+List<int> value = [2];
+
+getMidPoint(String shortenedUri) async {
+  var x = await getExpandedUrl(shortenedUri);
+  return (getMidP(getLatLong(x)));
+}
+
+getPetrolBunks(List midPoint) async {
+  Map data = {
+    'client_id': 'XXXHYXS01GX50KRXM53HD12NB00CL4RTPODV34RLQTOW1VM0',
+    'client_secret': 'PCDGO5DYACJ1BAHD0QVNRYKZ5FYYTQ0IQ4S3UHEYWTWWGZ2W',
+    'v': '20210525',
+    'll': '${midPoint[4]},${midPoint[5]}',
+    'radius': '30000',
+    'query': 'petrol bunk'
+  };
+
+  var response = await http.post(
+      Uri.parse("https://api.foursquare.com/v2/venues/search"),
+      body: data);
+  var jsonResponse = json.decode(response.body);
+
+  print(jsonResponse['response']['venues'][0]['name']);
+  print(jsonResponse['response']['venues'][0]['location']['lat']);
+  print(jsonResponse['response']['venues'][0]['location']['lng']);
+  return [
+    jsonResponse['response']['venues'][0]['name'],
+    jsonResponse['response']['venues'][0]['location']['lat'],
+    jsonResponse['response']['venues'][0]['location']['lng']
+  ];
+}
+
+getEateries(List midPoint) async {
+  Map data = {
+    'client_id': 'XXXHYXS01GX50KRXM53HD12NB00CL4RTPODV34RLQTOW1VM0',
+    'client_secret': 'PCDGO5DYACJ1BAHD0QVNRYKZ5FYYTQ0IQ4S3UHEYWTWWGZ2W',
+    'v': '20210525',
+    'll': '${midPoint[4]},${midPoint[5]}',
+    'radius': '10000',
+    'query': 'restaurant'
+  };
+
+  var response = await http.post(
+      Uri.parse("https://api.foursquare.com/v2/venues/search"),
+      body: data);
+  //print(response.body);
+
+  var jsonResponse = json.decode(response.body);
+  //print(jsonResponse);
+  jsonResponse['response']['venues'].forEach((element) {
+    print(element['name']);
+  });
+  return [
+    jsonResponse['response']['venues'][0]['name'],
+    jsonResponse['response']['venues'][0]['location']['lat'],
+    jsonResponse['response']['venues'][0]['location']['lng']
+  ];
+}
 
 List<String> allDocIds = []; // List of all Document ID
 // List nestedRoutePreferences = []; // List of List of route prefs
@@ -24,10 +132,52 @@ var fromList = []; // fromCity list
 var toFromList = []; // toCity list , given fromCity
 List<TripDetails> allRoutesAccordingToPreference = []; // List of all routes
 
+class LabeledCheckbox extends StatefulWidget {
+  const LabeledCheckbox({
+    this.label,
+    this.padding,
+    this.value,
+    this.onChanged,
+  });
+
+  final String label;
+  final EdgeInsets padding;
+  final bool value;
+  final Function onChanged;
+
+  @override
+  _LabeledCheckboxState createState() => _LabeledCheckboxState();
+}
+
+class _LabeledCheckboxState extends State<LabeledCheckbox> {
+  @override
+  Widget build(BuildContext context) {
+    return InkWell(
+      onTap: () {
+        widget.onChanged(!widget.value);
+      },
+      child: Padding(
+        padding: widget.padding,
+        child: Row(
+          children: <Widget>[
+            Expanded(child: Text(widget.label)),
+            Checkbox(
+              value: widget.value,
+              onChanged: (newValue) {
+                widget.onChanged(newValue);
+              },
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
 void launchURL(url) async =>
     await canLaunch(url) ? await launch(url) : throw 'Could not launch $url';
 
-class TripDetails extends StatelessWidget {
+class TripDetails extends StatefulWidget {
   final String docid;
   final String desc;
   final String title;
@@ -56,156 +206,227 @@ class TripDetails extends StatelessWidget {
       this.link,
       // ignore: non_constant_identifier_names
       this.travel_month});
+
+  @override
+  _TripDetailsState createState() => _TripDetailsState();
+}
+
+class _TripDetailsState extends State<TripDetails> {
+
   Color colour = Colors.blue[900];
+
   @override
   Widget build(BuildContext context) {
     var width = MediaQuery.of(context).size.width;
     return GestureDetector(
         onTap: () {
+          bool _eateriesIsSelected =false;
+          bool _gasStationIsSelected=false;
+          var one;
+          getMidPoint(widget.link).then((xxx) {
+            setState(() {
+              one = xxx;
+            });
+            print(one);
+          });
+
+
           showDialog(
               context: context,
-              builder: (BuildContext context) {
-                return AlertDialog(
-                  title: Center(child: Text('Trip Details')),
-                  content: Container(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        ClipRRect(
-                            borderRadius: BorderRadius.only(
-                              topRight: Radius.circular(spacing_middle),
-                              topLeft: Radius.circular(spacing_middle),
+              builder: ( context) {
+                return StatefulBuilder(
+                    builder: (context, setState)
+                {
+                  return AlertDialog(
+                    title: Center(child: Text('Trip Details')),
+                    content: Container(
+                      child: SingleChildScrollView(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            ClipRRect(
+                                borderRadius: BorderRadius.only(
+                                  topRight: Radius.circular(spacing_middle),
+                                  topLeft: Radius.circular(spacing_middle),
+                                ),
+                                child: Stack(
+                                  children: <Widget>[
+                                    Container(
+                                      color: Colors.white,
+                                      // child: Image.network(tripImage) ,
+                                      child: CachedNetworkImage(
+                                        imageUrl: widget.tripImage,
+                                        height: width * 0.3,
+                                        fit: BoxFit.none,
+                                        width: width,
+                                      ),
+                                    )
+                                  ],
+                                )),
+                            SizedBox(
+                              height: 20,
                             ),
-                            child: Stack(
-                              children: <Widget>[
-                                Container(
-                                  color: Colors.white,
-                                  // child: Image.network(tripImage) ,
-                                  child: CachedNetworkImage(
-                                    imageUrl: tripImage,
-                                    height: width * 0.3,
-                                    fit: BoxFit.none,
-                                    width: width,
-                                  ),
-                                )
-                              ],
-                            )),
-                        SizedBox(
-                          height: 20,
-                        ),
-                        Text(
-                          title,
-                          style: TextStyle(
-                              fontSize: 20,
-                              fontWeight: FontWeight.w600,
-                              fontStyle: FontStyle.normal),
-                        ),
-                        SizedBox(
-                          height: 15,
-                        ),
-                        Text(
-                          desc,
-                          style: TextStyle(
-                              fontSize: 15,
-                              fontWeight: FontWeight.w600,
-                              fontStyle: FontStyle.normal),
-                        ),
-                        SizedBox(
-                          height: 15,
-                        ),
-                        text("From : $fromCity",
-                            textAllCaps: true, fontFamily: fontMedium),
-                        SizedBox(
-                          height: 15,
-                        ),
-                        text("To : $toCity",
-                            textAllCaps: true, fontFamily: fontMedium),
-                        SizedBox(
-                          height: 15,
-                        ),
-                        text("Expenses : $expenses",
-                            textAllCaps: true, fontFamily: fontMedium),
-                        SizedBox(
-                          height: 15,
-                        ),
-                        text("Mode of Travel : $mode",
-                            textAllCaps: true, fontFamily: fontMedium),
-                        SizedBox(
-                          height: 15,
-                        ),
-                        ElevatedButton(
-                            onPressed: () async {
-                              await launch(link);
-                              // launchURL(link);
-                            },
-                            child: Text('Guide Me !'))
-                      ],
-                    ),
-                  ),
-                  actions: <Widget>[
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.only(left: 8.0, right: 40),
-                          child: FlatButton(
-                              child: Icon(
-                                Icons.thumb_up,
-                                color: colour,
-                              ),
-                              onPressed: () {
-                                if (colour == Colors.green) {
-                                  ScaffoldMessenger.of(context)
-                                      .showSnackBar(SnackBar(
-                                    content: Text("$title Route Disiked"),
-                                  ));
-                                  colour = Colors.blue[900];
-                                  final firestoreInstance =
-                                      FirebaseFirestore.instance;
-                                  firestoreInstance
-                                      .collection("trip")
-                                      .doc(docid)
-                                      .update({
-                                    "likes": likes - 1,
-                                  }).then((_) {
-                                    print("success!");
-                                  });
-                                  Navigator.pop(context);
-                                } else {
-                                  ScaffoldMessenger.of(context)
-                                      .showSnackBar(SnackBar(
-                                    content: Text("$title Route Liked"),
-                                  ));
-                                  colour = Colors.green;
+                            Text(
+                              widget.title,
+                              style: TextStyle(
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.w600,
+                                  fontStyle: FontStyle.normal),
+                            ),
+                            SizedBox(
+                              height: 15,
+                            ),
+                            Text(
+                              widget.desc,
+                              style: TextStyle(
+                                  fontSize: 15,
+                                  fontWeight: FontWeight.w600,
+                                  fontStyle: FontStyle.normal),
+                            ),
+                            SizedBox(
+                              height: 15,
+                            ),
+                            text("From : ${widget.fromCity}",
+                                textAllCaps: true, fontFamily: fontMedium),
+                            SizedBox(
+                              height: 15,
+                            ),
+                            text("To : ${widget.toCity}",
+                                textAllCaps: true, fontFamily: fontMedium),
+                            SizedBox(
+                              height: 15,
+                            ),
+                            text("Expenses : ${widget.expenses}",
+                                textAllCaps: true, fontFamily: fontMedium),
+                            SizedBox(
+                              height: 15,
+                            ),
+                            text("Mode of Travel : ${widget.mode}",
+                                textAllCaps: true, fontFamily: fontMedium),
+                            SizedBox(
+                              height: 15,
+                            ),
+                            LabeledCheckbox(
+                              label: 'Eateries',
+                              padding:
+                              const EdgeInsets.symmetric(horizontal: 20.0),
+                              value: _eateriesIsSelected,
+                              onChanged: (bool newValue) {
+                                setState(() {
+                                  _eateriesIsSelected = newValue;
+                                });
+                              },
+                            ),
+                            LabeledCheckbox(
+                              label: 'Gas Station',
+                              padding:
+                              const EdgeInsets.symmetric(horizontal: 20.0),
+                              value: _gasStationIsSelected,
+                              onChanged: (bool newValue) {
+                                setState(() {
+                                  _gasStationIsSelected = newValue;
+                                });
+                              },
+                            ),
+                            ElevatedButton(
+                                onPressed: () async {
+                                  String a = "/\'${one[0]}" + ",${one[1]}\'";
+                                  String c =
+                                      "/\'${one[4]}" + ",${one[5]}\'";
+                                  String b = "/\'${one[2]}" + ",${one[3]}\'";
+                                  String pb = "";
+                                  String eat = "";
 
-                                  final firestoreInstance =
-                                      FirebaseFirestore.instance;
-                                  firestoreInstance
-                                      .collection("trip")
-                                      .doc(docid)
-                                      .update({
-                                    "likes": likes + 1,
-                                  }).then((_) {
-                                    print("success!");
-                                  });
-                                  Navigator.pop(context);
-                                }
-                              }),
+
+
+                                  if (_eateriesIsSelected == true) {
+                                    var y = await getEateries(one);
+                                    eat = "/\'${y[1].toString()}" +
+                                        ",${y[2].toString()}\'";
+                                  }
+                                  if (_gasStationIsSelected == true) {
+                                    var x = await getPetrolBunks(one);
+                                    pb = "/\'${x[1].toString()}" +
+                                        ",${x[2].toString()}\'";
+                                  }
+                                  String xx =
+                                      "https://www.google.com/maps/dir$a$pb$eat$b";
+                                  await launch(xx);
+                                  // launchURL(link);
+                                },
+                                child: Text('Guide Me !'))
+                          ],
                         ),
-                        Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 35),
-                          child: FlatButton(
-                            child: Text('OK'),
-                            onPressed: () {
-                              Navigator.pop(context);
-                            },
-                          ),
-                        ),
-                      ],
+                      ),
                     ),
-                  ],
-                );
+                    actions: <Widget>[
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.only(
+                                left: 8.0, right: 40),
+                            child: FlatButton(
+                                child: Icon(
+                                  Icons.thumb_up,
+                                  color: colour,
+                                ),
+                                onPressed: () {
+                                  if (colour == Colors.green) {
+                                    ScaffoldMessenger.of(context)
+                                        .showSnackBar(SnackBar(
+                                      content:
+                                      Text("${widget.title} Route Disiked"),
+                                    ));
+                                    colour = Colors.blue[900];
+                                    final firestoreInstance =
+                                        FirebaseFirestore.instance;
+                                    firestoreInstance
+                                        .collection("trip")
+                                        .doc(widget.docid)
+                                        .update({
+                                      "likes": widget.likes - 1,
+                                    }).then((_) {
+                                      print("success!");
+                                    });
+                                    Navigator.pop(context);
+                                  } else {
+                                    ScaffoldMessenger.of(context)
+                                        .showSnackBar(SnackBar(
+                                      content:
+                                      Text("${widget.title} Route Liked"),
+                                    ));
+                                    colour = Colors.green;
+
+                                    final firestoreInstance =
+                                        FirebaseFirestore.instance;
+                                    firestoreInstance
+                                        .collection("trip")
+                                        .doc(widget.docid)
+                                        .update({
+                                      "likes": widget.likes + 1,
+                                    }).then((_) {
+                                      print("success!");
+                                    });
+                                    Navigator.pop(context);
+                                  }
+                                }),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 35),
+                            child: FlatButton(
+                              child: Text('OK'),
+                              onPressed: () {
+                                Navigator.pop(context);
+                              },
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  );
+                });
               });
         },
         child: Container(
@@ -228,7 +449,7 @@ class TripDetails extends StatelessWidget {
                       Container(
                         color: Colors.white,
                         child: CachedNetworkImage(
-                          imageUrl: tripImage,
+                          imageUrl: widget.tripImage,
                           height: width * 0.3,
                           fit: BoxFit.none,
                           width: width,
@@ -250,16 +471,17 @@ class TripDetails extends StatelessWidget {
                       SizedBox(
                         width: spacing_control_half,
                       ),
-                      text(title, textAllCaps: true, fontFamily: fontMedium),
+                      text(widget.title,
+                          textAllCaps: true, fontFamily: fontMedium),
                     ],
                   ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      text("From : $fromCity",
+                      text("From : ${widget.fromCity}",
                           textAllCaps: true, fontFamily: fontMedium),
-                      text("To : $toCity",
+                      text("To : ${widget.toCity}",
                           textAllCaps: true, fontFamily: fontMedium),
                       Row(
                         children: [
@@ -269,7 +491,7 @@ class TripDetails extends StatelessWidget {
                           ),
                           Padding(
                             padding: const EdgeInsets.all(5.0),
-                            child: Text('$likes'),
+                            child: Text('${widget.likes}'),
                           ),
                         ],
                       )
@@ -444,8 +666,15 @@ cosineDist() async {
     ..sort((k1, k2) => finalList[k2].compareTo(finalList[k1]));
   sortedMap = LinkedHashMap.fromIterable(sortedKeys,
       key: (k) => k, value: (k) => finalList[k]);
+
+
+  List cosinvevaluefrommap=[];
+  print(sortedMap);
   sortedMap.forEach((key, value) {
     sortedDocIds.add(key);
+  });
+  sortedMap.forEach((key, value) {
+    cosinvevaluefrommap.add(value);
   });
   print('6) Sorted DOc ids >>>>>> : $sortedDocIds');
   List<String> sortedDocIds2 = []..addAll(sortedDocIds);
@@ -469,7 +698,6 @@ cosineDist() async {
         .doc(sortedDocIds2[o])
         .get()
         .then((value) {
-      //print("doc id inside loop : ${sortedDocIds2[o]}");
       docid = sortedDocIds2[o];
       desc = (value.data()["info"]['desc']);
       title = (value.data()["info"]['title']);
@@ -497,43 +725,12 @@ cosineDist() async {
     o++;
   }
   print(allRoutesAccordingToPreference);
-  // sortedDocIds2.forEach((element)  {
-  //    firestoreInstance.collection("trip").doc(element).get().then((value) {
-  //     print("doc id inside loop : $element");
-  //     desc = (value.data()["info"]['desc']);
-  //     title = (value.data()["info"]['title']);
-  //     tripImage = (value.data()["info"]['photo']);
-  //     toCity = (value.data()['route']["route_info"]['to']);
-  //     fromCity = (value.data()['route']["route_info"]['from']);
-  //     link=(value.data()['route']["route_info"]['link']);
-  //     expenses=(value.data()['misc']["expenses"]);
-  //     mode=(value.data()['misc']["mode"]);
-  //     TripDetails x=TripDetails(desc: desc,
-  //       title: title,
-  //       tripImage: tripImage,
-  //       toCity: toCity,
-  //       fromCity: fromCity,
-  //       link: link,
-  //       expenses: expenses,
-  //       mode: mode);
-  //     allRoutesAccordingToPreference.add(x);
-  //
-  //     //  allRoutesAccordingToPreference.add(TripDetails(
-  //     //   desc: desc,
-  //     //   title: title,
-  //     //   tripImage: tripImage,
-  //     //   toCity: toCity,
-  //     //   fromCity: fromCity,
-  //     //   link: link,
-  //     //   expenses: expenses,
-  //     //   mode: mode,
-  //     // ));
-  //   });
-  //   print('title : $title');
-  //   //allRoutesAccordingToPreference2.add(TripDetails(desc: desc,title: title,tripImage: tripImage,toCity: toCity,fromCity: fromCity,));
-  // });
-  //allRoutesAccordingToPreference = []..addAll(allRoutesAccordingToPreference2);
-
+  print(' ---------Match Percentage-------------');
+  int i=0;
+ allRoutesAccordingToPreference.forEach((element) {
+   print("${element.title } =====> ${cosinvevaluefrommap[i]*100}");
+   i++;
+ });
   print(
       "allroutes according yo preference22 : $allRoutesAccordingToPreference2");
   print("allroutes according yo preference : $allRoutesAccordingToPreference");

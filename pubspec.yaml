@@ -50,6 +50,8 @@ dependencies:
   url_launcher: ^6.0.4
   carousel_slider: ^3.0.0
   pull_to_refresh: ^2.0.0
+  puppeteer: ^2.0.0
+  sticky_headers: "^0.1.8"
   flutter_localizations:
     sdk: flutter
 

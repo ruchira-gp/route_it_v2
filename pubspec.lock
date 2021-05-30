@@ -364,6 +364,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.6.3"
+  logging:
+    dependency: transitive
+    description:
+      name: logging
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.0.1"
   matcher:
     dependency: transitive
     description:
@@ -497,6 +504,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.0.0"
+  pool:
+    dependency: transitive
+    description:
+      name: pool
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.5.0"
   process:
     dependency: transitive
     description:
@@ -522,6 +536,13 @@ packages:
     dependency: "direct main"
     description:
       name: pull_to_refresh
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "2.0.0"
+  puppeteer:
+    dependency: "direct main"
+    description:
+      name: puppeteer
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.0.0"
@@ -607,6 +628,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.10.0"
+  sticky_headers:
+    dependency: "direct main"
+    description:
+      name: sticky_headers
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.1.8+1"
   stream_channel:
     dependency: transitive
     description:

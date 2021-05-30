@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 
 import 'package:progress_dialog/progress_dialog.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
+import 'package:route_it_v2/main/utils/latlong.dart';
 
 import 'package:route_it_v2/ri/screen/About.dart';
 import 'package:route_it_v2/ri/screen/FirstPreferencePage.dart';
@@ -128,10 +129,12 @@ class _NavigatorPageState extends State<NavigatorPage> {
   TextStyle(fontSize: 30, fontWeight: FontWeight.bold);
     List<Widget> _widgetOptions = <Widget>[
       DisplaySearchedRoutes(),
-      //QIBusViewOffer(),
       HomePageRI(),
-     // QIBusHome(),
-      DisplayAllRoutes(),
+      // Hello(),
+      // Hello(),
+      // Hello(),
+
+     DisplayAllRoutes(),
 
 
   ];
@@ -168,14 +171,13 @@ class _NavigatorPageState extends State<NavigatorPage> {
    toFromList = []; // toCity list , given fromCity
     allRoutesAccordingToPreference = [] ;
   retrieveAllDocIds();
-  //retrieveRoutePreferences();
-  //retrieveUserRoutePreference();
+
   getToList();
   getFromList();
   getToFromList('Mysore');
   cosineDist();
-  sortDocIdsAfterCosine();
-  // doThis();
+
+
     super.initState();
 
 
