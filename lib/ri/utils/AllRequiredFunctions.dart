@@ -42,6 +42,7 @@ getLatLong(strr) {
       3,
     ));
   });
+  print('Hello this is route ');
   print(route);
   return route;
 }
@@ -68,13 +69,16 @@ getMidPoint(String shortenedUri) async {
   var x = await getExpandedUrl(shortenedUri);
   return (getMidP(getLatLong(x)));
 }
-
+getLocation(String shortenedUri) async {
+  var x = await getExpandedUrl(shortenedUri);
+  return (getLatLong(x));
+}
 getPetrolBunks(List midPoint) async {
   Map data = {
     'client_id': 'XXXHYXS01GX50KRXM53HD12NB00CL4RTPODV34RLQTOW1VM0',
     'client_secret': 'PCDGO5DYACJ1BAHD0QVNRYKZ5FYYTQ0IQ4S3UHEYWTWWGZ2W',
     'v': '20210525',
-    'll': '${midPoint[4]},${midPoint[5]}',
+    'll': '${midPoint[0]},${midPoint[1]}',
     'radius': '35000',
     'query': 'petrol bunk'
   };
@@ -88,13 +92,20 @@ getPetrolBunks(List midPoint) async {
     print('Empty List');
     return null;
   } else {
+
     print(jsonResponse['response']['venues'][0]['name']);
     print(jsonResponse['response']['venues'][0]['location']['lat']);
     print(jsonResponse['response']['venues'][0]['location']['lng']);
     return [
       jsonResponse['response']['venues'][0]['name'],
       jsonResponse['response']['venues'][0]['location']['lat'],
-      jsonResponse['response']['venues'][0]['location']['lng']
+      jsonResponse['response']['venues'][0]['location']['lng'],
+      jsonResponse['response']['venues'][1]['name'],
+      jsonResponse['response']['venues'][1]['location']['lat'],
+      jsonResponse['response']['venues'][1]['location']['lng'],
+      jsonResponse['response']['venues'][2]['name'],
+      jsonResponse['response']['venues'][2]['location']['lat'],
+      jsonResponse['response']['venues'][2]['location']['lng'],
     ];
   }
 }
@@ -104,7 +115,7 @@ getEateries(List midPoint) async {
     'client_id': 'XXXHYXS01GX50KRXM53HD12NB00CL4RTPODV34RLQTOW1VM0',
     'client_secret': 'PCDGO5DYACJ1BAHD0QVNRYKZ5FYYTQ0IQ4S3UHEYWTWWGZ2W',
     'v': '20210525',
-    'll': '${midPoint[4]},${midPoint[5]}',
+    'll': '${midPoint[0]},${midPoint[1]}',
     'radius': '25000',
     'query': 'restaurant'
   };
@@ -127,7 +138,13 @@ getEateries(List midPoint) async {
     return [
       jsonResponse['response']['venues'][0]['name'],
       jsonResponse['response']['venues'][0]['location']['lat'],
-      jsonResponse['response']['venues'][0]['location']['lng']
+      jsonResponse['response']['venues'][0]['location']['lng'],
+      jsonResponse['response']['venues'][1]['name'],
+      jsonResponse['response']['venues'][1]['location']['lat'],
+      jsonResponse['response']['venues'][1]['location']['lng'],
+      jsonResponse['response']['venues'][2]['name'],
+      jsonResponse['response']['venues'][2]['location']['lat'],
+      jsonResponse['response']['venues'][2]['location']['lng'],
     ];
   }
 }
@@ -313,75 +330,70 @@ class _TripDetailsState extends State<TripDetails> {
                             SizedBox(
                               height: 15,
                             ),
-                            LabeledCheckbox(
-                              label: 'Eateries',
-                              padding:
-                                  const EdgeInsets.symmetric(horizontal: 20.0),
-                              value: _eateriesIsSelected,
-                              onChanged: (bool newValue) {
-                                setState(() {
-                                  _eateriesIsSelected = newValue;
-                                });
-                              },
-                            ),
-                            LabeledCheckbox(
-                              label: 'Gas Station',
-                              padding:
-                                  const EdgeInsets.symmetric(horizontal: 20.0),
-                              value: _gasStationIsSelected,
-                              onChanged: (bool newValue) {
-                                setState(() {
-                                  _gasStationIsSelected = newValue;
-                                });
-                              },
-                            ),
+                            // LabeledCheckbox(
+                            //   label: 'Eateries',
+                            //   padding:
+                            //       const EdgeInsets.symmetric(horizontal: 20.0),
+                            //   value: _eateriesIsSelected,
+                            //   onChanged: (bool newValue) {
+                            //     setState(() {
+                            //       _eateriesIsSelected = newValue;
+                            //     });
+                            //   },
+                            // ),
+                            // LabeledCheckbox(
+                            //   label: 'Gas Station',
+                            //   padding:
+                            //       const EdgeInsets.symmetric(horizontal: 20.0),
+                            //   value: _gasStationIsSelected,
+                            //   onChanged: (bool newValue) {
+                            //     setState(() {
+                            //       _gasStationIsSelected = newValue;
+                            //     });
+                            //   },
+                            // ),
                             ElevatedButton(
                                 onPressed: () async {
-                                  await getMidPoint(widget.link)
-                                      .then((one) async {
-                                    String a = "/\'${one[0]}" + ",${one[1]}\'";
-                                    String c = "/\'${one[4]}" + ",${one[5]}\'";
-                                    String b = "/\'${one[2]}" + ",${one[3]}\'";
-                                    String pb = "";
-                                    String eat = "";
-
-                                    if (_eateriesIsSelected == true) {
-                                      var y = await getEateries(one);
-                                      if (y == null) {
-                                        ScaffoldMessenger.of(context)
-                                            .showSnackBar(SnackBar(
-                                          content:
-                                          Text("No Suitable  eateries available"),
-                                        ));
-                                      } else {
-                                        eat = "/\'${y[1].toString()}" +
-                                            ",${y[2].toString()}\'";
-                                      }
-                                    }
-                                    if (_gasStationIsSelected == true) {
-                                      var x = await getPetrolBunks(one);
-                                      if(x==null)
-                                      {
-                                        ScaffoldMessenger.of(context)
-                                            .showSnackBar(SnackBar(
-                                          content:
-                                          Text("No Fuel Stations available"),
-                                        ));
-                                      }
-                                      else{
-                                      pb = "/\'${x[1].toString()}" +
-                                          ",${x[2].toString()}\'";
-                                    }
-                                    }
-                                    String xx =
-                                        "https://www.google.com/maps/dir$a$pb$eat$b";
-                                    await launch(xx);
-                                  });
+                                  await launch(widget.link);
                                 },
+                                // launchURL(link);
+                                child: Text('Guide Me !')),
+                            ElevatedButton(
+                                onPressed: () async {
+                                  var z = await getLocation(widget.link);
+                                  print(
+                                      "${z[0]},${z[1]},${z[z.length - 2]},${z[z
+                                          .length - 1]}");
+                                  List xx = [z[z.length - 2], z[z.length - 1]];
+                                  print("This is xx");
+                                  print(xx);
+                                  var xxx = await getEateries(xx);
+                                  print(xxx);
+                                  showDialog(
+                                      context: context,
+                                      builder: (context) {
+                                        return StatefulBuilder(
+                                            builder: (context, setState) {
+                                              return AlertDialog(
+                                                  title: Center(child: Text(
+                                                      'Trip Details')),
+                                                  content: Container(child: Column(
+                                                    children: [
+                                                      Text(xxx[0]),Text(xxx[3]),Text(xxx[6]),
+                                                    ],
+                                                  ),height: 100,));
+                                            });
+                                      });
+                                },
+                                child: Text('Optional Eateries at Destination'),
+                            ),
+
+
+
 
                                 // launchURL(link);
 
-                                child: Text('Guide Me !'))
+
                           ],
                         ),
                       ),
