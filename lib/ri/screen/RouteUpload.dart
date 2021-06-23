@@ -58,12 +58,16 @@ class _RouteUploadState extends State<RouteUpload> {
   File file;
   selectImage() async {
     await Permission.photos.request();
-
     var permissionStatus = await Permission.photos.status;
     if (permissionStatus.isGranted) {
       //Select Image
       image = await _imagePicker.getImage(source: ImageSource.gallery);
       file = File(image.path);
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(
+        content:
+        Text("Photo Selected"),
+      ));
     } else {
       print('No Image Path Received');
     }
@@ -108,7 +112,7 @@ class _RouteUploadState extends State<RouteUpload> {
         "photo": imageUrl,
         "title": titleTextEditingController.text,
       },
-      "likes": 2,
+      "likes": 0,
       "misc": {
         "duration_days": durationTextEditingController.text,
         "expenses": expensesTextEditingController.text,
@@ -210,6 +214,7 @@ class _RouteUploadState extends State<RouteUpload> {
                     ),
                     TextField(
                       controller: titleTextEditingController,
+                      maxLength: 32,
                       keyboardType: TextInputType.text,
                       decoration: InputDecoration(
                         labelText: "Title",

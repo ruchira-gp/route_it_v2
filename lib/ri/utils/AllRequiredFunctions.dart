@@ -116,7 +116,7 @@ getEateries(List midPoint) async {
     'client_secret': 'PCDGO5DYACJ1BAHD0QVNRYKZ5FYYTQ0IQ4S3UHEYWTWWGZ2W',
     'v': '20210525',
     'll': '${midPoint[0]},${midPoint[1]}',
-    'radius': '25000',
+    'radius': '40000',
     'query': 'restaurant'
   };
 

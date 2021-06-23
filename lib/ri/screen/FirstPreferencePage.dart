@@ -39,6 +39,11 @@ class _MyStatefulWidgetState extends State<FirstPreference> {
               "prefs.riverside" : _items.length-_items.indexOf("RiverSide"),
               "prefs.desert" : _items.length-_items.indexOf("Desert"),
             }).then((_) {
+              ScaffoldMessenger.of(context)
+                  .showSnackBar(SnackBar(
+                content:
+                Text("Preference Updated"),
+              ));
               print("success!");
               Navigator.pushAndRemoveUntil(  context,
                 MaterialPageRoute(builder: (BuildContext context) => NavigatorPage()),
