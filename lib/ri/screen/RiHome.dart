@@ -43,7 +43,7 @@ class _QIBusHomeState extends State<QIBusHome> {
             onPressed: (){
               retrieveAllDocIds();
               retrieveRoutePreferences();
-              retrieveUserRoutePreference();
+              //retrieveUserRoutePreference();
               getToList();
               getFromList();
               getToFromList('Mysore');

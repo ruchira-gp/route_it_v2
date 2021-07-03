@@ -346,6 +346,7 @@ class _RouteUploadState extends State<RouteUpload> {
                     TextField(
                       controller: toTextEditingController,
                       keyboardType: TextInputType.text,
+                      maxLength: 15,
                       decoration: InputDecoration(
                         labelText: "To ",
                         labelStyle: TextStyle(
@@ -364,6 +365,7 @@ class _RouteUploadState extends State<RouteUpload> {
                     TextField(
                       controller: fromTextEditingController,
                       keyboardType: TextInputType.text,
+                      maxLength: 15,
                       decoration: InputDecoration(
                         labelText: "From",
                         labelStyle: TextStyle(

@@ -42,8 +42,8 @@ getLatLong(strr) {
       3,
     ));
   });
-  print('Hello this is route ');
-  print(route);
+ //print('Hello this is route ');
+ //print(route);
   return route;
 }
 
@@ -87,9 +87,9 @@ getPetrolBunks(List midPoint) async {
       Uri.parse("https://api.foursquare.com/v2/venues/search"),
       body: data);
   var jsonResponse = json.decode(response.body);
-  print(jsonResponse);
+  //print(jsonResponse);
   if (jsonResponse['response']['venues'].toString() == "[]") {
-    print('Empty List');
+    //print('Empty List');
     return null;
   } else {
 
@@ -128,11 +128,11 @@ getEateries(List midPoint) async {
   var jsonResponse = json.decode(response.body);
   print(jsonResponse);
   if (jsonResponse['response']['venues'].toString() == "[]") {
-    print('Empty List');
+    //print('Empty List');
     return null;
   } else {
     jsonResponse['response']['venues'].forEach((element) {
-      print(element['name']);
+      //print(element['name']);
     });
 
     return [
@@ -254,7 +254,7 @@ class _TripDetailsState extends State<TripDetails> {
             setState(() {
               one = xxx;
             });
-            print(one);
+            //print(one);
           });
 
           showDialog(
@@ -361,14 +361,12 @@ class _TripDetailsState extends State<TripDetails> {
                             ElevatedButton(
                                 onPressed: () async {
                                   var z = await getLocation(widget.link);
-                                  print(
-                                      "${z[0]},${z[1]},${z[z.length - 2]},${z[z
-                                          .length - 1]}");
+                                  //print("${z[0]},${z[1]},${z[z.length - 2]},${z[z.length - 1]}");
                                   List xx = [z[z.length - 2], z[z.length - 1]];
-                                  print("This is xx");
-                                  print(xx);
+                                  //print("This is xx");
+                                  //print(xx);
                                   var xxx = await getEateries(xx);
-                                  print(xxx);
+                                  //print(xxx);
                                   showDialog(
                                       context: context,
                                       builder: (context) {
@@ -427,7 +425,7 @@ class _TripDetailsState extends State<TripDetails> {
                                         .update({
                                       "likes": widget.likes - 1,
                                     }).then((_) {
-                                      print("success!");
+                                      //print("success!");
                                     });
                                     Navigator.pop(context);
                                   } else {
@@ -446,7 +444,7 @@ class _TripDetailsState extends State<TripDetails> {
                                         .update({
                                       "likes": widget.likes + 1,
                                     }).then((_) {
-                                      print("success!");
+                                      //print("success!");
                                     });
                                     Navigator.pop(context);
                                   }
@@ -469,13 +467,13 @@ class _TripDetailsState extends State<TripDetails> {
               });
         },
         child: Container(
-          width: width * 0.7,
+          width: width * 0.6,
           margin: EdgeInsets.only(
               left: spacing_standard_new,
               right: spacing_standard_new,
               bottom: spacing_standard_new),
           decoration: boxDecoration(
-              showShadow: true, bgColor: qIBus_white, radius: spacing_middle),
+              showShadow: true, bgColor: Colors.lightBlue[50], radius: spacing_middle),
           child: Column(
             children: <Widget>[
               ClipRRect(
@@ -594,36 +592,37 @@ retrieveRoutePreferences() async {
 //----------------------------------------------------------------------------------------------
 // Retrieves Current User route preferences as list  and stores it in currentUserPreference
 
-retrieveUserRoutePreference() {
-  // var firebaseUser = FirebaseAuth.instance.currentUser;
-  // final firestoreInstance = FirebaseFirestore.instance;
-  //
-  // firestoreInstance
-  //     .collection("users")
-  //     .doc(firebaseUser.uid)
-  //     .get()
-  //     .then((result) {
-  //   int a = 0, b = 0, c = 0, d = 0, e = 0, f = 0;
-  //   //print(result.id);
-  //   a = result.data()['prefs']['desert'];
-  //   b = result.data()['prefs']['forest'];
-  //   c = result.data()['prefs']['highway'];
-  //   d = result.data()['prefs']['mountain'];
-  //   e = result.data()['prefs']['pilgrimage'];
-  //   f = result.data()['prefs']['riverside'];
-  //   currentUserPreference.add(a);
-  //   currentUserPreference.add(b);
-  //   currentUserPreference.add(c);
-  //   currentUserPreference.add(d);
-  //   currentUserPreference.add(e);
-  //   currentUserPreference.add(f);
-  // });
-}
+// retrieveUserRoutePreference() {
+//   var firebaseUser = FirebaseAuth.instance.currentUser;
+//   final firestoreInstance = FirebaseFirestore.instance;
+//   List currentUserPreference =[];
+//   firestoreInstance
+//       .collection("users")
+//       .doc(firebaseUser.uid)
+//       .get()
+//       .then((result) {
+//     int a = 0, b = 0, c = 0, d = 0, e = 0, f = 0;
+//     //print(result.id);
+//     a = result.data()['prefs']['desert'];
+//     b = result.data()['prefs']['forest'];
+//     c = result.data()['prefs']['highway'];
+//     d = result.data()['prefs']['mountain'];
+//     e = result.data()['prefs']['pilgrimage'];
+//     f = result.data()['prefs']['riverside'];
+//     currentUserPreference.add(a);
+//     currentUserPreference.add(b);
+//     currentUserPreference.add(c);
+//     currentUserPreference.add(d);
+//     currentUserPreference.add(e);
+//     currentUserPreference.add(f);
+//     print(currentUserPreference);
+//   });
+// }
 
 //----------------------------------------------------------------------------------------------
 // Retrieves Cosine Sorted  as Map  and stores it in sortedMap
 cosineDist() async {
-  print('doc ids >>>>> $allDocIds>');
+  //('doc ids >>>>> $allDocIds>');
   List nestedRoutePreferences = []; // List of List of route prefs
   List currentUserPreference = [];
   var firebaseUser = FirebaseAuth.instance.currentUser;
@@ -649,7 +648,7 @@ cosineDist() async {
     currentUserPreference.add(e);
     currentUserPreference.add(f);
   });
-  print('2)currentUserPreference = $currentUserPreference');
+  //print('2)currentUserPreference = $currentUserPreference');
   //final firestoreInstance = FirebaseFirestore.instance;
   await firestoreInstance.collection('trip').get().then((querySnapshot) {
     querySnapshot.docs.forEach((result) {
@@ -673,29 +672,29 @@ cosineDist() async {
       nestedRoutePreferences.add(X);
     });
   });
-  print('3) nestedRoutePrefs >>>>>$nestedRoutePreferences');
+  //print('3) nestedRoutePrefs >>>>>$nestedRoutePreferences');
 
   List<dynamic> routeRating = []..addAll(nestedRoutePreferences);
   //List routeRating = nestedRoutePreferences;
-  print('4) route Rating = $routeRating');
+  //print('4) route Rating = $routeRating');
   List<double> cosineValues = [];
   routeRating.forEach((element) {
     var temp = element;
     var tempDouble =
         temp.map((i) => int.parse(i.toString()).toDouble()).toList();
     tempDouble = tempDouble.cast<double>();
-    print('tempDouble = $tempDouble');
+    //print('tempDouble = $tempDouble');
     var userPreferenceDouble = currentUserPreference
         .map((i) => int.parse(i.toString()).toDouble())
         .toList();
-    print('userprefernceDouble : $userPreferenceDouble');
+    //print('userprefernceDouble : $userPreferenceDouble');
     double x = 1 - cosineDistance(tempDouble, userPreferenceDouble);
     cosineValues.add(x);
   });
-  print('5) cosinevalues>>>>>>> $cosineValues');
+ // print('5) cosinevalues>>>>>>> $cosineValues');
   //var temp = routeRating[i];
 
-  print("hello im cosineDist function");
+  //print("hello im cosineDist function");
   var finalList = new Map();
   for (var x = 0; x < cosineValues.length; x++) {
     finalList[allDocIds[x]] = cosineValues[x];
@@ -706,15 +705,15 @@ cosineDist() async {
   sortedMap = LinkedHashMap.fromIterable(sortedKeys,
       key: (k) => k, value: (k) => finalList[k]);
 
-  print(sortedMap);
+  //print(sortedMap);
   List aloha=[];
   sortedMap.forEach((key, value) {
     sortedDocIds.add(key);
     aloha.add(value);
   });
-  print('6) Sorted DOc ids >>>>>> : $sortedDocIds');
+  //print('6) Sorted DOc ids >>>>>> : $sortedDocIds');
   List<String> sortedDocIds2 = []..addAll(sortedDocIds);
-  print('7) Sorted DOc ids2>>>>>>>> : $sortedDocIds2');
+  //print('7) Sorted DOc ids2>>>>>>>> : $sortedDocIds2');
 
   List<TripDetails> allRoutesAccordingToPreference2 = [];
   String docid = "";
@@ -757,20 +756,27 @@ cosineDist() async {
       docid: docid,
       likes: likes,
     ));
-    print(sortedDocIds2[o]);
+    //print(sortedDocIds2[o]);
     o++;
   }
-  print(allRoutesAccordingToPreference);
+  //print(allRoutesAccordingToPreference);
+  print("Current User Terrain Preference\n");
+  print("\tDesert = ${currentUserPreference[0]}");
+  print("\tForest = ${currentUserPreference[1]}");
+  print("\tHighway = ${currentUserPreference[2]}");
+  print("\tMountains = ${currentUserPreference[3]}");
+  print("\tPilgrimage = ${currentUserPreference[4]}");
+  print("\tRiverSide = ${currentUserPreference[5]}");
+  print("\n");
   print(' ---------Match Percentage-------------');
   int i = 0;
   allRoutesAccordingToPreference.forEach((element) {
     var xyz=aloha[i] * 100;
-    print("${element.title} =====> $xyz");
+    print("$xyz ==> ${element.title}  ");
     i++;
   });
-  print(
-      "allroutes according yo preference22 : $allRoutesAccordingToPreference2");
-  print("allroutes according yo preference : $allRoutesAccordingToPreference");
+  //print("allroutes according yo preference22 : $allRoutesAccordingToPreference2");
+  //print("allroutes according yo preference : $allRoutesAccordingToPreference");
 }
 
 //----------------------------------------------------------------------------------------------
@@ -858,7 +864,7 @@ getToFromList(String fromCity) async {
 // Converts the route details into object of type TripDetails and stores it in allRoutesAccordingToPreference
 
 getAllRoutesAccordingToPreference() {
-  print('Sorted DOc ids 222222: $sortedDocIds');
+  //print('Sorted DOc ids 222222: $sortedDocIds');
   final firestoreInstance = FirebaseFirestore.instance;
   String desc = "";
   String title = "";
@@ -897,7 +903,7 @@ getAllRoutesAccordingToPreference() {
     });
   });
 
-  print("allroutes according yo preference : $allRoutesAccordingToPreference");
+  //print("allroutes according yo preference : $allRoutesAccordingToPreference");
 }
 
 //----------------------------------------------------------------------------------------------
