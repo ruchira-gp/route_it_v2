@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:route_it_v2/ri/screen/QIBusHome.dart';
+import 'package:route_it_v2/ri/screen/RiHome.dart';
 class FirstPreference extends StatefulWidget {
 
 
@@ -39,7 +39,15 @@ class _MyStatefulWidgetState extends State<FirstPreference> {
               "prefs.riverside" : _items.length-_items.indexOf("RiverSide"),
               "prefs.desert" : _items.length-_items.indexOf("Desert"),
             }).then((_) {
+              ScaffoldMessenger.of(context)
+                  .showSnackBar(SnackBar(
+                content:
+                Text("Preference Updated"),
+              ));
               print("success!");
+              Navigator.pushAndRemoveUntil(  context,
+                MaterialPageRoute(builder: (BuildContext context) => NavigatorPage()),
+                ModalRoute.withName('/'),);
             });
           },
           child: const Icon(Icons.done),
@@ -48,7 +56,7 @@ class _MyStatefulWidgetState extends State<FirstPreference> {
       actions: [
 
         ElevatedButton(onPressed: (){
-          Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => QIBusHome()));
+          Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => NavigatorPage()));
         }, child: Icon(Icons.home)),
 
       ],),

@@ -1,13 +1,10 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:route_it_v2/ri/model/QiBusModel.dart';
-import 'package:route_it_v2/ri/utils/QiBusColors.dart';
-import 'package:route_it_v2/ri/utils/QiBusConstant.dart';
-import 'package:route_it_v2/ri/utils/QiBusDataGenerator.dart';
-import 'package:route_it_v2/ri/utils/QiBusImages.dart';
-import 'package:route_it_v2/ri/utils/QiBusStrings.dart';
-import 'package:route_it_v2/ri/utils/QiBusWidget.dart';
+import 'package:route_it_v2/ri/model/RiModel.dart';
+import 'package:route_it_v2/ri/utils/RiColors.dart';
+import 'package:route_it_v2/ri/utils/RiConstant.dart';
+import 'package:route_it_v2/ri/utils/RiWidget.dart';
 
 class QIBusViewOffer extends StatefulWidget {
   static String tag = '/QIBusViewOffer';
@@ -22,7 +19,7 @@ class QIBusViewOfferState extends State<QIBusViewOffer> {
   @override
   void initState() {
     super.initState();
-    mOfferList = QIBusGetOffer();
+
   }
 
   @override
@@ -31,11 +28,6 @@ class QIBusViewOfferState extends State<QIBusViewOffer> {
         backgroundColor: qIBus_app_background,
         body: Column(
           children: <Widget>[
-            TopBar(
-              QIBus_text_offers,
-              icon: qibus_gif_bell,
-              isVisible: true,
-            ),
             Expanded(
               child: SingleChildScrollView(
                 child: ListView.builder(
@@ -98,7 +90,6 @@ class NewOffer extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.center,
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
-              text(QIBus_lbl_use_code, fontFamily: fontMedium),
               SizedBox(
                 width: spacing_control_half,
               ),

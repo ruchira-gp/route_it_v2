@@ -1,9 +1,9 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:route_it_v2/ri/screen/QIBusHome.dart';
-import 'package:route_it_v2/ri/screen/QIBusSignIn.dart';
+import 'package:route_it_v2/ri/screen/RiSignIn.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:route_it_v2/ri/screen/progressDialog.dart';
+import 'package:progress_dialog/progress_dialog.dart';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 import '../../main.dart';
@@ -165,23 +165,37 @@ class RegistrationScreen extends StatelessWidget {
   }
 
   final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
+
   void registerNewUser(BuildContext context) async
   {
-    showDialog(
-        context: context,
-        barrierDismissible: false,
-        builder: (BuildContext context){
-          return ProgressDialog(message: "Registering, Please Wait ...",);
-        }
+    final prr = ProgressDialog(context,type: ProgressDialogType.Normal, isDismissible: true, showLogs: true);
+    prr.style(
+        message: 'Registering New User, Please wait...',
+        borderRadius: 10.0,
+        backgroundColor: Colors.white,
+        progressWidget: CircularProgressIndicator(),
+        elevation: 10.0,
+        insetAnimCurve: Curves.easeInOut,
+        progressTextStyle: TextStyle(
+            color: Colors.black, fontSize: 10.0, fontWeight: FontWeight.w400),
+        messageTextStyle: TextStyle(
+            color: Colors.black, fontSize: 12.0, fontWeight: FontWeight.w600)
     );
+    await prr.show();
+
+
+
     final User firebaseUser = (await _firebaseAuth.createUserWithEmailAndPassword(
         email: emailTextEditingController.text,
         password: passwordTextEditingController.text).catchError((errMsg){
       Navigator.pop(context);
       displayToastMessage("Error :" + errMsg.toString(), context);
+      prr.hide();
     })).user; //if return is None then user is not created
 
-    if (firebaseUser != null) { // User created
+    if (firebaseUser != null) {
+       prr.update(message: "User Created");
+      // User created
       //Save user info to the database
       var firebaseUser =  FirebaseAuth.instance.currentUser;
 
@@ -201,31 +215,14 @@ class RegistrationScreen extends StatelessWidget {
               "riverside" : 0,
               "desert" : 0
             }
-          }).then((_){
+          }).then((_)async{
+
+        await prr.hide();
+
         print("success!");
       });
 
 
-
-
-      // firestoreInstance.collection("users").add(
-      //     {
-      //       "name" : nameTextEditingController.text,
-      //       "email" : emailTextEditingController.text,
-      //       "phno" : phoneTextEditingController.text,
-      //       "pref_flag":0,
-      //       "prefs" : {
-      //         "mountain" : 0,
-      //         "forest" : 0,
-      //         "pilgrimage" : 0,
-      //         "highway" : 0,
-      //         "riverside" : 0,
-      //         "desert" : 0
-      //       }
-      //     }).then((value){
-      //   print(value.id);
-      // });
-      displayToastMessage("Congragulations, your account has been created", context);
       Navigator.pushAndRemoveUntil(
         context,
         MaterialPageRoute(

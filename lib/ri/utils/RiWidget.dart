@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:route_it_v2/ri/screen/QIBusNotification.dart';
 
-import 'QiBusColors.dart';
-import 'QiBusConstant.dart';
-import 'QiBusExtension.dart';
+
+import 'RiColors.dart';
+import 'RiConstant.dart';
 
 Widget text(String text,
     {var fontSize = textSizeMedium,
@@ -54,15 +53,17 @@ Padding editTextStyle(var hintText, {var line = 1}) {
       ));
 }
 
-Container homeEditTextStyle(var hintText, {var line = 1}) {
+Container homeEditTextStyle(var hintText,TextEditingController controllerSearch, {var line = 1}) {
   return Container(
     child: TextField(
+      controller:controllerSearch,
       style: TextStyle(fontSize: textSizeMedium, fontFamily: fontRegular, color: qIBus_textChild),
       decoration: InputDecoration(
         contentPadding: EdgeInsets.fromLTRB(16, 8, 16, 8),
         isDense: true,
         hintText: hintText,
         border: InputBorder.none,
+
       ),
     ),
   );
@@ -90,7 +91,7 @@ class QIBusAppButtonState extends State<QIBusAppButton> {
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.0)),
         padding: const EdgeInsets.all(0.0),
         child: Container(
-          decoration: const BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(8.0)), color: qIBus_colorPrimary),
+          decoration: const BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(8.0)), color: Colors.lightBlueAccent),
           child: Center(
             child: Padding(
               padding: const EdgeInsets.all(16.0),
@@ -100,8 +101,8 @@ class QIBusAppButtonState extends State<QIBusAppButton> {
                 textAlign: TextAlign.center,
               ),
             ),
-          ),
-        ));
+          ),)
+        );
   }
 
   @override
@@ -128,7 +129,7 @@ class TopBar extends StatefulWidget {
 class TopBarState extends State<TopBar> {
   @override
   Widget build(BuildContext context) {
-    changeStatusColor(qIBus_colorPrimary);
+
     return SafeArea(
       child: Stack(
         children: <Widget>[
@@ -153,7 +154,7 @@ class TopBarState extends State<TopBar> {
                                   color: qIBus_white,
                                 ),
                                 onPressed: () {
-                                  finish(context);
+
                                 },
                               ),
                               Padding(
@@ -169,7 +170,7 @@ class TopBarState extends State<TopBar> {
                     widget.isVisible
                         ? GestureDetector(
                             onTap: () {
-                              launchScreen(context, QIBusNotification.tag);
+
                             },
                             child: Container(
                               margin: EdgeInsets.only(
@@ -184,7 +185,7 @@ class TopBarState extends State<TopBar> {
                             ))
                         : GestureDetector(
                             onTap: () {
-                              launchScreen(context, QIBusNotification.tag);
+
                             },
                             child: Container(
                               margin: EdgeInsets.only(
@@ -241,7 +242,7 @@ Widget title(var title, BuildContext context) {
                         color: qIBus_white,
                       ),
                       onPressed: () {
-                        finish(context);
+
                       },
                     ),
                     Padding(

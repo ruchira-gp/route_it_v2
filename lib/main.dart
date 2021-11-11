@@ -3,8 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:route_it_v2/ri/screen/QIBusHome.dart';
-import 'package:route_it_v2/ri/screen/QIBusSignIn.dart';
+import 'package:route_it_v2/ri/screen/HomePage.dart';
+import 'package:route_it_v2/ri/screen/RiHome.dart';
+import 'package:route_it_v2/ri/screen/RiSignIn.dart';
 
 void main() async{
   WidgetsFlutterBinding.ensureInitialized();
@@ -26,7 +27,6 @@ class App extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
 
-    _initialization;
     return FutureBuilder(
       // Initialize FlutterFire:
       future: _initialization,
@@ -46,7 +46,7 @@ class App extends StatelessWidget {
                 if (user == null) {
                   return QIBusSignIn();
                 } else {
-                  return QIBusHome();
+                  return NavigatorPage();
                 }
               }
             },
@@ -61,44 +61,5 @@ class App extends StatelessWidget {
   }
 }
 
-// class MyApp extends StatelessWidget {
-//   final Future<FirebaseApp> _initialization = Firebase.initializeApp();
-//   // This widget is the root of your application.
-//   @override
-//   Widget build(BuildContext context) {
-//     return FutureBuilder(
-//       // Initialize FlutterFire:
-//       future: _initialization,
-//       builder: (context, snapshot) {
-//         // Check for errors
-//         if (snapshot.hasError) {
-//           print('SOmewtging went rwomg');
-//         }
-//
-//         // Once complete, show your application
-//         if (snapshot.connectionState == ConnectionState.done) {
-//           return StreamBuilder(
-//             stream: FirebaseAuth.instance.authStateChanges(),
-//             builder: (context, snapshot) {
-//               if (snapshot.connectionState == ConnectionState.active) {
-//                 User user = snapshot.data;
-//                 if (user == null) {
-//                   return LoginScreen();
-//                 } else {
-//                   return HomeScreen();
-//                 }
-//               }
-//             },
-//           );
-//         }
-//         // Otherwise, show something whilst waiting for initialization to complete
-//         return Scaffold(
-//           body: Text('loading'),
-//         );
-//         // print('loading');
-//       },
-//     );
-//   }
-//
-// }
+
 

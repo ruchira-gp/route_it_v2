@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:route_it_v2/ri/utils/QiBusColors.dart';
+import 'package:route_it_v2/ri/utils/RiColors.dart';
 import 'package:route_it_v2/ri/utils/codePicker/selection_dialog.dart';
 
-import '../QiBusConstant.dart';
-import '../QiBusWidget.dart';
+import '../RiConstant.dart';
+import '../RiWidget.dart';
 import 'QIBusCountry_code.dart';
 import 'country_codes.dart';
 
